@@ -11,13 +11,13 @@ import {
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select"
-import { saveToLocalStorageWithExpiry } from '@/tools/helper'
+import { saveToLocalStorageWithExpiry } from '@/helpers/helper'
 
  let preOrgs = [
     {
-        "name":"TTEC",
-        "orgId":"268a1671-cd4a-4f36-9442-5d2e1a023f01",
-        "client_id":"d2d35298-783d-4787-ab97-f9765f9b69ed",
+        "name":"Home Base",
+        "orgId":import.meta.env.VITE_BASE_OID,
+        "client_id":import.meta.env.VITE_BASE_CID,
         "region":"us-east-1"
     }
      

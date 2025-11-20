@@ -11,7 +11,7 @@ import {
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select"
-import { saveToLocalStorageWithExpiry } from '@/tools/helper'
+import { saveToLocalStorageWithExpiry } from '@/helpers/helper'
 
 // Make the user type in their org short name and then fetch the orgId from the API Talk to steve on this 
 const OrgSelector = () => {

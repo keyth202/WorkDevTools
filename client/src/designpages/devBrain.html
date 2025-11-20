@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevBrain - Developer's Productivity Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .flip-card {
+            perspective: 1000px;
+        }
+        .flip-card-inner {
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            backface-visibility: hidden;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        .flip-card-back {
+            transform: rotateY(180deg);
+        }
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                z-index: 50;
+                height: 100vh;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Mobile menu button -->
+        <button id="mobile-menu-button" class="md:hidden fixed top-4 left-4 z-50 bg-blue-600 text-white p-2 rounded-lg">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Sidebar -->
+        <div id="sidebar" class="sidebar bg-gray-800 text-white w-64 flex-shrink-0">
+            <div class="p-4 flex items-center space-x-3 border-b border-gray-700">
+                <div class="bg-blue-500 rounded-full w-10 h-10 flex items-center justify-center">
+                    <i class="fas fa-brain text-xl"></i>
+                </div>
+                <h1 class="text-xl font-bold">DevBrain</h1>
+            </div>
+            <nav class="p-4">
+                <div class="space-y-2">
+                    <button onclick="switchTab('dashboard')" class="tab-button w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition" data-tab="dashboard">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </button>
+                    <button onclick="switchTab('knowledgebase')" class="tab-button w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition" data-tab="knowledgebase">
+                        <i class="fas fa-book"></i>
+                        <span>Knowledge Base</span>
+                    </button>
+                    <button onclick="switchTab('projects')" class="tab-button w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition" data-tab="projects">
+                        <i class="fas fa-project-diagram"></i>
+                        <span>Projects</span>
+                    </button>
+                    <button onclick="switchTab('tasks')" class="tab-button w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition" data-tab="tasks">
+                        <i class="fas fa-tasks"></i>
+                        <span>Tasks</span>
+                    </button>
+                    <button onclick="switchTab('team')" class="tab-button w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition" data-tab="team">
+                        <i class="fas fa-users"></i>
+                        <span>Team</span>
+                    </button>
+                    <button onclick="switchTab('training')" class="tab-button w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition bg-gray-700" data-tab="training">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>Training</span>
+                    </button>
+                </div>
+                <div class="mt-8 pt-4 border-t border-gray-700">
+                    <button class="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </button>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Main content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Top bar -->
+            <header class="bg-white shadow-sm py-4 px-6 flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <h2 id="current-tab" class="text-xl font-semibold">Training</h2>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <input type="text" placeholder="Search..." class="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+                    <div class="relative">
+                        <button class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                            <i class="fas fa-bell text-gray-600"></i>
+                            <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                        </button>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white">
+                            <span>JD</span>
+                        </div>
+                        <span class="hidden md:inline">John Developer</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Tab content -->
+            <main class="flex-1 overflow-y-auto p-6 bg-gray-50">
+                <!-- Dashboard Tab -->
+                <div id="dashboard" class="tab-content">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-500">Active Projects</p>
+                                    <h3 class="text-2xl font-bold">5</h3>
+                                </div>
+                                <div class="bg-blue-100 p-3 rounded-full">
+                                    <i class="fas fa-project-diagram text-blue-600"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-500">Pending Tasks</p>
+                                    <h3 class="text-2xl font-bold">12</h3>
+                                </div>
+                                <div class="bg-green-100 p-3 rounded-full">
+                                    <i class="fas fa-tasks text-green-600"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-500">Team Members</p>
+                                    <h3 class="text-2xl font-bold">8</h3>
+                                </div>
+                                <div class="bg-purple-100 p-3 rounded-full">
+                                    <i class="fas fa-users text-purple-600"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-500">Certifications</p>
+                                    <h3 class="text-2xl font-bold">3</h3>
+                                </div>
+                                <div class="bg-yellow-100 p-3 rounded-full">
+                                    <i class="fas fa-certificate text-yellow-600"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="bg-white rounded-lg shadow p-6 lg:col-span-2">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="font-semibold">Recent Projects</h3>
+                                <button class="text-blue-600 hover:text-blue-800">View All</button>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between p-3 border rounded-lg">
+                                    <div>
+                                        <h4 class="font-medium">E-commerce Platform</h4>
+                                        <p class="text-sm text-gray-500">React, Node.js, MongoDB</p>
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">Active</span>
+                                        <button class="text-gray-400 hover:text-gray-600">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between p-3 border rounded-lg">
+                                    <div>
+                                        <h4 class="font-medium">Mobile Banking App</h4>
+                                        <p class="text-sm text-gray-500">Flutter, Firebase</p>
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Completed</span>
+                                        <button class="text-gray-400 hover:text-gray-600">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between p-3 border rounded-lg">
+                                    <div>
+                                        <h4 class="font-medium">AI Chatbot</h4>
+                                        <p class="text-sm text-gray-500">Python, TensorFlow</p>
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">In Progress</span>
+                                        <button class="text-gray-400 hover:text-gray-600">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="font-semibold">Upcoming Tasks</h3>
+                                <button class="text-blue-600 hover:text-blue-800">View All</button>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="p-3 border rounded-lg">
+                                    <div class="flex items-start justify-between">
+                                        <div>
+                                            <h4 class="font-medium">Implement user authentication</h4>
+                                            <p class="text-sm text-gray-500">E-commerce Platform</p>
+                                        </div>
+                                        <span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full">High</span>
+                                    </div>
+                                    <div class="mt-2 flex items-center justify-between text-sm">
+                                        <span class="text-gray-500">Due: Tomorrow</span>
+                                        <div class="flex space-x-1">
+                                            <div class="w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-xs">JD</div>
+                                            <div class="w-6 h-6 rounded-full bg-purple-500 text-white flex items-center justify-center text-xs">AM</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-3 border rounded-lg">
+                                    <div class="flex items-start justify-between">
+                                        <div>
+                                            <h4 class="font-medium">Write API documentation</h4>
+                                            <p class="text-sm text-gray-500">Mobile Banking App</p>
+                                        </div>
+                                        <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">Medium</span>
+                                    </div>
+                                    <div class="mt-2 flex items-center justify-between text-sm">
+                                        <span class="text-gray-500">Due: Fri, Jun 2</span>
+                                        <div class="flex space-x-1">
+                                            <div class="w-6 h-6 rounded-full bg-green-500 text-white flex items-center justify-center text-xs">TS</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Knowledge Base Tab -->
+                <div id="knowledgebase" class="tab-content">
+                    <div class="bg-white rounded-lg shadow p-6 mb-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-xl font-semibold">Knowledge Base</h3>
+                            <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center space-x-2">
+                                <i class="fas fa-plus"></i>
+                                <span>Add Article</span>
+                            </button>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <div class="relative">
+                                <input type="text" placeholder="Search knowledge base..." class="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="border rounded-lg p-4 hover:shadow-md transition cursor-pointer">
+                                <div class="bg-blue-100 w-12 h-12 rounded-lg flex items-center justify-center mb-3">
+                                    <i class="fas fa-code text-blue-600 text-xl"></i>
+                                </div>
+                                <h4 class="font-semibold mb-2">React Patterns</h4>
+                                <p class="text-sm text-gray-600">Common React patterns and best practices for component architecture.</p>
+                                <div class="mt-3 flex items-center text-sm text-gray-500">
+                                    <i class="fas fa-calendar-alt mr-2"></i>
+                                    <span>Last updated: 2 days ago</span>
+                                </div>
+                            </div>
+                            
+                            <div class="border rounded-lg p-4 hover:shadow-md transition cursor-pointer">
+                                <div class="bg-green-100 w-12 h-12 rounded-lg flex items-center justify-center mb-3">
+                                    <i class="fas fa-server text-green-600 text-xl"></i>
+                                </div>
+                                <h4 class="font-semibold mb-2">API Design</h4>
+                                <p class="text-sm text-gray-600">RESTful API design principles and implementation guidelines.</p>
+                                <div class="mt-3 flex items-center text-sm text-gray-500">
+                                    <i class="fas fa-calendar-alt mr-2"></i>
+                                    <span>Last updated: 1 week ago</span>
+                                </div>
+                            </div>
+                            
+                            <div class="border rounded-lg p-4 hover:shadow-md transition cursor-pointer">
+                                <div class="bg-purple-100 w-12 h-12 rounded-lg flex items-center justify-center mb-3">
+                                    <i class="fas fa-database text-purple-600 text-xl"></i>
+                                </div>
+                                <h4 class="font-semibold mb-2">Database Optimization</h4>
+                                <p class="text-sm text-gray-600">Techniques for optimizing SQL and NoSQL database performance.</p>
+                                <div class="mt-3 flex items-center text-sm text-gray-500">
+                                    <i class="fas fa-calendar-alt mr-2"></i>
+                                    <span>Last updated: 3 weeks ago</span>
+                                </div>
+                            </div>
+                            
+                            <div class="border rounded-lg p-4 hover:shadow-md transition cursor-pointer">
+                                <div class="bg-yellow-100 w-12 h-12 rounded-lg flex items-center justify-center mb-3">
+                                    <i class="fas fa-lock text-yellow-600 text-xl"></i>
+                                </div>
+                                <h4 class="font-semibold mb-2">Security Best Practices</h4>
+                                <p class="text-sm text-gray-600">Essential security practices for web application development.</p>
+                                <div class="mt-3 flex items-center text-sm text-gray-500">
+                                    <i class="fas fa-calendar-alt mr-2"></i>
+                                    <span>Last updated: 1 month ago</span>
+                                </div>
+                            </div>
+                            
+                            <div class="border rounded-lg p-4 hover:shadow-md transition cursor-pointer">
+                                <div class="bg-red-100 w-12 h-12 rounded-lg flex items-center justify-center mb-3">
+                                    <i class="fas fa-mobile-alt text-red-600 text-xl"></i>
+                                </div>
+                                <h4 class="font-semibold mb-2">Mobile Development</h4>
+                                <p class="text-sm text-gray-600">Cross-platform mobile development with React Native and Flutter.</p>
+                                <div class="mt-3 flex items-center text-sm text-gray-500">
+                                    <i class="fas fa-calendar-alt mr-2"></i>
+                                    <span>Last updated: 2 weeks ago</span>
+                                </div>
+                            </div>
+                            
+                            <div class="border rounded-lg p-4 hover:shadow-md transition cursor-pointer">
+                                <div class="bg-indigo-100 w-12 h-12 rounded-lg flex items-center justify-center mb-3">
+                                    <i class="fas fa-cloud text-indigo-600 text-xl"></i>
+                                </div>
+                                <h4 class="font-semibold mb-2">Cloud Deployment</h4>
+                                <p class="text-sm text-gray-600">Guide to deploying applications on AWS, Azure, and Google Cloud.</p>
+                                <div class="mt-3 flex items-center text-sm text-gray-500">
+                                    <i class="fas fa-calendar-alt mr-2"></i>
+                                    <span>Last updated: 5 days ago</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Projects Tab -->
+                <div id="projects" class="tab-content">
+                    <div class="bg-white rounded-lg shadow p-6 mb-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-xl font-semibold">Projects</h3>
+                            <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center space-x-2">
+                                <i class="fas fa-plus"></i>
+                                <span>New Project</span>
+                            </button>
+                        </div>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Project</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Technology</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Team</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Progress</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-10 w-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                                    <i class="fas fa-shopping-cart text-blue-600"></i>
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-gray-900">E-commerce Platform</div>
+                                                    <div class="text-sm text-gray-500">Started 2 weeks ago</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">React, Node.js, MongoDB</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex -space-x-2">
+                                                <div class="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center text-xs">JD</div>
+                                                <div class="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center text-xs">TS</div>
+                                                <div class="w-8 h-8 rounded-full bg-purple-500 text-white flex items-center justify-center text-xs">AM</div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">In Progress</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                                <div class="bg-blue-600 h-2.5 rounded-full" style="width: 45%"></div>
+                                            </div>
+                                            <span class="text-xs text-gray-500">45% complete</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <button class="text-blue-600 hover:text-blue-900 mr-3"><i class="fas fa-eye"></i></button>
+                                            <button class="text-green-600 hover:text-green-900 mr-3"><i class="fas fa-edit"></i></button>
+                                            <button class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-10 w-10 bg-green-100 rounded-lg flex items-center justify-center">
+                                                    <i class="fas fa-mobile-alt text-green-600"></i>
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-gray-900">Mobile Banking App</div>
+                                                    <div class="text-sm text-gray-500">Started 1 month ago</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">Flutter, Firebase</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex -space-x-2">
+                                                <div class="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center text-xs">JD</div>
+                                                <div class="w-8 h-8 rounded-full bg-red-500 text-white flex items-center justify-center text-xs">LR</div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">Planning</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                                <div class="bg-blue-600 h-2.5 rounded-full" style="width: 15%"></div>
+                                            </div>
+                                            <span class="text-xs text-gray-500">15% complete</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <button class="text-blue-600 hover:text-blue-900 mr-3"><i class="fas fa-eye"></i></button>
+                                            <button class="text-green-600 hover:text-green-900 mr-3"><i class="fas fa-edit"></i></button>
+                                            <button class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-10 w-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                                                    <i class="fas fa-robot text-purple-600"></i>
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-gray-900">AI Chatbot</div>
+                                                    <div class="text-sm text-gray-500">Started 3 months ago</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">Python, TensorFlow</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex -space-x-2">
+                                                <div class="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center text-xs">JD</div>
+                                                <div class="w-8 h-8 rounded-full bg-yellow-500 text-white flex items-center justify-center text-xs">MK</div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Completed</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                                <div class="bg-blue-600 h-2.5 rounded-full" style="width: 100%"></div>
+                                            </div>
+                                            <span class="text-xs text-gray-500">100% complete</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <button class="text-blue-600 hover:text-blue-900 mr-3"><i class="fas fa-eye"></i></button>
+                                            <button class="text-green-600 hover:text-green-900 mr-3"><i class="fas fa-edit"></i></button>
+                                            <button class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tasks Tab -->
+                <div id="tasks" class="tab-content">
+                    <div class="bg-white rounded-lg shadow p-6 mb-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-xl font-semibold">Tasks</h3>
+                            <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center space-x-2">
+                                <i class="fas fa-plus"></i>
+                                <span>New Task</span>
+                            </button>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <div class="flex space-x-4">
+                                <button class="px-4 py-2 rounded-lg bg-blue-600 text-white">All</button>
+                                <button class="px-4 py-2 rounded-lg bg-white border hover:bg-gray-50">Pending</button>
+                                <button class="px-4 py-2 rounded-lg bg-white border hover:bg-gray-50">In Progress</button>
+                                <button class="px-4 py-2 rounded-lg bg-white border hover:bg-gray-50">Completed</button>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div class="border rounded-lg p-4 hover:shadow-md transition">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex items-start space-x-4">
+                                        <div class="mt-1">
+                                            <input type="checkbox" class="h-5 w-5 text-blue-600 rounded">
+                                        </div>
+                                        <div>
+                                            <h4 class="font-medium">Implement user authentication</h4>
+                                            <p class="text-sm text-gray-500">E-commerce Platform</p>
+                                            <div class="mt-2 flex items-center space-x-4">
+                                                <span class="flex items-center text-sm text-gray-500">
+                                                    <i class="fas fa-calendar-alt mr-1"></i>
+                                                    Due: Tomorrow
+                                                </span>
+                                                <span class="flex items-center text-sm text-gray-500">
+                                                    <i class="fas fa-user mr-1"></i>
+                                                    Assigned to: You
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full">High</span>
+                                </div>
+                            </div>
+                            
+                            <div class="border rounded-lg p-4 hover:shadow-md transition">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex items-start space-x-4">
+                                        <div class="mt-1">
+                                            <input type="checkbox" class="h-5 w-5 text-blue-600 rounded">
+                                        </div>
+                                        <div>
+                                            <h4 class="font-medium">Write API documentation</h4>
+                                            <p class="text-sm text-gray-500">Mobile Banking App</p>
+                                            <div class="mt-2 flex items-center space-x-4">
+                                                <span class="flex items-center text-sm text-gray-500">
+                                                    <i class="fas fa-calendar-alt mr-1"></i>
+                                                    Due: Fri, Jun 2
+                                                </span>
+                                                <span class="flex items-center text-sm text-gray-500">
+                                                    <i class="fas fa-user mr-1"></i>
+                                                    Assigned to: You & Tom
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">Medium</span>
+                                </div>
+                            </div>
+                            
+                            <div class="border rounded-lg p-4 hover:shadow-md transition">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex items-start space-x-4">
+                                        <div class="mt-1">
+                                            <input type="checkbox" class="h-5 w-5 text-blue-600 rounded" checked>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-medium line-through">Design database schema</h4>
+                                            <p class="text-sm text-gray-500">AI Chatbot</p>
+                                            <div class="mt-2 flex items-center space-x-4">
+                                                <span class="flex items-center text-sm text-gray-500">
+                                                    <i class="fas fa-calendar-alt mr-1"></i>
+                                                    Due: Mon, May 15
+                                                </span>
+                                                <span class="flex items-center text-sm text-gray-500">
+                                                    <i class="fas fa-user mr-1"></i>
+                                                    Assigned to: You
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Completed</span>
+                                </div>
+                            </div>
+                            
+                            <div class="border rounded-lg p-4 hover:shadow-md transition">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex items-start space-x-4">
+                                        <div class="mt-1">
+                                            <input type="checkbox" class="h-5 w-5 text-blue-600 rounded">
+                                        </div>
+                                        <div>
+                                            <h4 class="font-medium">Set up CI/CD pipeline</h4>
+                                            <p class="text-sm text-gray-500">E-commerce Platform</p>
+                                            <div class="mt-2 flex items-center space-x-4">
+                                                <span class="flex items-center text-sm text-gray-500">
+                                                    <i class="fas fa-calendar-alt mr-1"></i>
+                                                    Due: Wed, Jun 7
+                                                </span>
+                                                <span class="flex items-center text-sm text-gray-500">
+                                                    <i class="fas fa-user mr-1"></i>
+                                                    Assigned to: You & Anna
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">Medium</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Team Tab -->
+                <div id="team" class="tab-content">
+                    <div class="bg-white rounded-lg shadow p-6 mb-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-xl font-semibold">Team Members</h3>
+                            <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center space-x-2">
+                                <i class="fas fa-plus"></i>
+                                <span>Add Member</span>
+                            </button>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            <div class="border rounded-lg p-6 text-center hover:shadow-md transition">
+                                <div class="w-20 h-20 rounded-full bg-blue-500 text-white flex items-center justify-center text-2xl mx-auto mb-4">JD</div>
+                                <h4 class="font-semibold text-lg">John Developer</h4>
+                                <p class="text-gray-600 mb-2">Senior Full Stack Developer</p>
+                                <div class="flex justify-center space-x-2 mb-4">
+                                    <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">React</span>
+                                    <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Node.js</span>
+                                    <span class="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full">AWS</span>
+                                </div>
+                                <div class="flex justify-center space-x-4">
+                                    <button class="text-blue-600 hover:text-blue-800"><i class="fas fa-envelope"></i></button>
+                                    <button class="text-green-600 hover:text-green-800"><i class="fas fa-comment"></i></button>
+                                    <button class="text-gray-600 hover:text-gray-800"><i class="fas fa-ellipsis-v"></i></button>
+                                </div>
+                            </div>
+                            
+                            <div class="border rounded-lg p-6 text-center hover:shadow-md transition">
+                                <div class="w-20 h-20 rounded-full bg-green-500 text-white flex items-center justify-center text-2xl mx-auto mb-4">TS</div>
+                                <h4 class="font-semibold text-lg">Tom Smith</h4>
+                                <p class="text-gray-600 mb-2">Mobile Developer</p>
+                                <div class="flex justify-center space-x-2 mb-4">
+                                    <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">Flutter</span>
+                                    <span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full">iOS</span>
+                                    <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">Firebase</span>
+                                </div>
+                                <div class="flex justify-center space-x-4">
+                                    <button class="text-blue-600 hover:text-blue-800"><i class="fas fa-envelope"></i></button>
+                                    <button class="text-green-600 hover:text-green-800"><i class="fas fa-comment"></i></button>
+                                    <button class="text-gray-600 hover:text-gray-800"><i class="fas fa-ellipsis-v"></i></button>
+                                </div>
+                            </div>
+                            
+                            <div class="border rounded-lg p-6 text-center hover:shadow-md transition">
+                                <div class="w-20 h-20 rounded-full bg-purple-500 text-white flex items-center justify-center text-2xl mx-auto mb-4">AM</div>
+                                <h4 class="font-semibold text-lg">Anna Martinez</h4>
+                                <p class="text-gray-600 mb-2">DevOps Engineer</p>
+                                <div class="flex justify-center space-x-2 mb-4">
+                                    <span class="px-2 py-1 bg-indigo-100 text-indigo-800 text-xs rounded-full">AWS</span>
+                                    <span class="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full">Docker</span>
+                                    <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">Kubernetes</span>
+                                </div>
+                                <div class="flex justify-center space-x-4">
+                                    <button class="text-blue-600 hover:text-blue-800"><i class="fas fa-envelope"></i></button>
+                                    <button class="text-green-600 hover:text-green-800"><i class="fas fa-comment"></i></button>
+                                    <button class="text-gray-600 hover:text-gray-800"><i class="fas fa-ellipsis-v"></i></button>
+                                </div>
+                            </div>
+                            
+                            <div class="border rounded-lg p-6 text-center hover:shadow-md transition">
+                                <div class="w-20 h-20 rounded-full bg-yellow-500 text-white flex items-center justify-center text-2xl mx-auto mb-4">MK</div>
+                                <h4 class="font-semibold text-lg">Mike Kim</h4>
+                                <p class="text-gray-600 mb-2">Data Scientist</p>
+                                <div class="flex justify-center space-x-2 mb-4">
+                                    <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Python</span>
+                                    <span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full">TensorFlow</span>
+                                    <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">SQL</span>
+                                </div>
+                                <div class="flex justify-center space-x-4">
+                                    <button class="text-blue-600 hover:text-blue-800"><i class="fas fa-envelope"></i></button>
+                                    <button class="text-green-600 hover:text-green-800"><i class="fas fa-comment"></i></button>
+                                    <button class="text-gray-600 hover:text-gray-800"><i class="fas fa-ellipsis-v"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Training Tab -->
+                <div id="training" class="tab-content active">
+                    <div class="bg-white rounded-lg shadow p-6 mb-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-xl font-semibold">Certification Training</h3>
+                            <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center space-x-2">
+                                <i class="fas fa-plus"></i>
+                                <span>New Study Set</span>
+                            </button>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <div class="flex space-x-4">
+                                <button class="px-4 py-2 rounded-lg bg-blue-600 text-white">All</button>
+                                <button class="px-4 py-2 rounded-lg bg-white border hover:bg-gray-50">AWS</button>
+                                <button class="px-4 py-2 rounded-lg bg-white border hover:bg-gray-50">Azure</button>
+                                <button class="px-4 py-2 rounded-lg bg-white border hover:bg-gray-50">Google Cloud</button>
+                                <button class="px-4 py-2 rounded-lg bg-white border hover:bg-gray-50">Security</button>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+                            <div class="border rounded-lg p-4 hover:shadow-md transition cursor-pointer">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="bg-blue-100 w-10 h-10 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-cloud text-blue-600"></i>
+                                    </div>
+                                    <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Active</span>
+                                </div>
+                                <h4 class="font-semibold mb-2">AWS Solutions Architect</h4>
+                                <p class="text-sm text-gray-600">Study materials for AWS Solutions Architect Associate certification</p>
+                                <div class="mt-3 flex items-center justify-between text-sm">
+                                    <span class="text-gray-500">42 cards</span>
+                                    <span class="text-gray-500">Last studied: 2 days ago</span>
+                                </div>
+                            </div>
+                            
+                            <div class="border rounded-lg p-4 hover:shadow-md transition cursor-pointer">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="bg-purple-100 w-10 h-10 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-shield-alt text-purple-600"></i>
+                                    </div>
+                                    <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">In Progress</span>
+                                </div>
+                                <h4 class="font-semibold mb-2">Security+ Concepts</h4>
+                                <p class="text-sm text-gray-600">Key concepts for CompTIA Security+ certification exam</p>
+                                <div class="mt-3 flex items-center justify-between text-sm">
+                                    <span class="text-gray-500">78 cards</span>
+                                    <span class="text-gray-500">Last studied: 1 week ago</span>
+                                </div>
+                            </div>
+                            
+                            <div class="border rounded-lg p-4 hover:shadow-md transition cursor-pointer">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="bg-green-100 w-10 h-10 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-database text-green-600"></i>
+                                    </div>
+                                    <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">Planned</span>
+                                </div>
+                                <h4 class="font-semibold mb-2">Google Cloud Data Engineer</h4>
+                                <p class="text-sm text-gray-600">Preparation for Google Cloud Professional Data Engineer exam</p>
+                                <div class="mt-3 flex items-center justify-between text-sm">
+                                    <span class="text-gray-500">0 cards</span>
+                                    <span class="text-gray-500">Not started</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gray-50 rounded-lg p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="text-xl font-semibold">AWS Solutions Architect Flashcards</h3>
+                                <div class="flex items-center space-x-4">
+                                    <button class="text-gray-600 hover:text-gray-800">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="text-gray-600 hover:text-gray-800">
+                                        <i class="fas fa-share-alt"></i>
+                                    </button>
+                                    <button class="text-gray-600 hover:text-gray-800">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="flex justify-center mb-6">
+                                <div class="w-full max-w-md">
+                                    <div id="flashcard" class="flip-card cursor-pointer" onclick="flipCard()">
+                                        <div class="flip-card-inner">
+                                            <div class="flip-card-front bg-white rounded-lg shadow-md p-8 h-64 flex items-center justify-center">
+                                                <div class="text-center">
+                                                    <h4 class="text-xl font-semibold mb-2">What is the difference between horizontal and vertical scaling?</h4>
+                                                    <p class="text-gray-500">Click to reveal answer</p>
+                                                </div>
+                                            </div>
+                                            <div class="flip-card-back bg-blue-600 text-white rounded-lg shadow-md p-8 h-64 flex items-center justify-center">
+                                                <div class="text-center">
+                                                    <h4 class="text-xl font-semibold mb-4">Answer:</h4>
+                                                    <p>Horizontal scaling (scaling out) adds more instances of the same size to handle increased load. Vertical scaling (scaling up) increases the capacity of an existing instance (e.g., more CPU, RAM).</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center justify-between">
+                                <button class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition">
+                                    <i class="fas fa-chevron-left mr-2"></i> Previous
+                                </button>
+                                <span class="text-gray-600">Card 12 of 42</span>
+                                <button class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition">
+                                    Next <i class="fas fa-chevron-right ml-2"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="mt-8">
+                                <h4 class="font-semibold mb-4">Add New Flashcard</h4>
+                                <form>
+                                    <div class="mb-4">
+                                        <label class="block text-gray-700 mb-2">Question</label>
+                                        <textarea class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" rows="2" placeholder="Enter question..."></textarea>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="block text-gray-700 mb-2">Answer</label>
+                                        <textarea class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" rows="3" placeholder="Enter answer..."></textarea>
+                                    </div>
+                                    <div class="flex justify-end">
+                                        <button type="button" class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition mr-2">
+                                            Cancel
+                                        </button>
+                                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                                            Save Flashcard
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('open');
+        });
+
+        // Tab switching
+        function switchTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Update current tab title
+            document.getElementById('current-tab').textContent = document.querySelector(`[data-tab="${tabName}"] span`).textContent;
+            
+            // Update active tab button
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('bg-gray-700');
+            });
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('bg-gray-700');
+            
+            // Close mobile menu if open
+            if (window.innerWidth <= 768) {
+                document.getElementById('sidebar').classList.remove('open');
+            }
+        }
+
+        // Flashcard flip
+        function flipCard() {
+            document.getElementById('flashcard').classList.toggle('flipped');
+        }
+
+        // Initialize with training tab active
+        document.addEventListener('DOMContentLoaded', function() {
+            switchTab('training');
+        });
+    </script>
+</body>
+</html>

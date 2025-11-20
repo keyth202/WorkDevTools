@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Connect | Volunteer Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#000000',
+                        secondary: '#F5F5DC',
+                        accent: '#FF6B6B',
+                        highlight: '#4ECDC4',
+                        action: '#FFBE0B',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .hero-gradient {
+            background: linear-gradient(135deg, rgba(0,0,0,0.9) 0%, rgba(78,205,196,0.7) 100%);
+        }
+        .cause-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.3);
+        }
+        .event-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        .organization-card:hover .org-logo {
+            transform: scale(1.1);
+        }
+        .tab-active {
+            border-bottom: 3px solid #FF6B6B;
+            color: #FF6B6B;
+        }
+        .drawer {
+            transition: transform 0.3s ease-in-out;
+        }
+        .drawer-closed {
+            transform: translateX(100%);
+        }
+    </style>
+</head>
+<body class="bg-secondary text-primary font-sans">
+    <!-- Navigation -->
+    <nav class="bg-primary text-secondary py-4 px-6 shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-hands-helping text-2xl text-accent"></i>
+                <span class="text-xl font-bold">CommunityConnect</span>
+            </div>
+            
+            <div class="hidden md:flex space-x-6 items-center">
+                <a href="#" class="hover:text-accent transition">Home</a>
+                <a href="#" class="hover:text-accent transition">Organizations</a>
+                <a href="#" class="hover:text-accent transition">Events</a>
+                <a href="#" class="hover:text-accent transition">Groups</a>
+                <button id="loginBtn" class="bg-accent text-primary px-4 py-2 rounded-full font-medium hover:bg-opacity-90 transition">Sign In</button>
+            </div>
+            
+            <button id="mobileMenuBtn" class="md:hidden text-2xl">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Drawer -->
+    <div id="mobileDrawer" class="drawer drawer-closed fixed inset-y-0 right-0 w-64 bg-primary text-secondary z-50 p-6 shadow-2xl">
+        <div class="flex justify-between items-center mb-8">
+            <h3 class="text-xl font-bold">Menu</h3>
+            <button id="closeDrawerBtn" class="text-2xl">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="flex flex-col space-y-4">
+            <a href="#" class="hover:text-accent transition border-b border-gray-700 pb-2">Home</a>
+            <a href="#" class="hover:text-accent transition border-b border-gray-700 pb-2">Organizations</a>
+            <a href="#" class="hover:text-accent transition border-b border-gray-700 pb-2">Events</a>
+            <a href="#" class="hover:text-accent transition border-b border-gray-700 pb-2">Groups</a>
+            <button class="bg-accent text-primary px-4 py-2 rounded-full font-medium hover:bg-opacity-90 transition mt-4">Sign In</button>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero-gradient text-secondary py-20 px-6">
+        <div class="container mx-auto text-center">
+            <h1 class="text-4xl md:text-6xl font-bold mb-6">Make a Difference <br> <span class="text-accent">Together</span></h1>
+            <p class="text-xl mb-10 max-w-2xl mx-auto">Connect with local volunteer organizations, events, and social groups dedicated to public good in your community.</p>
+            
+            <div class="max-w-3xl mx-auto bg-secondary rounded-lg shadow-xl p-6">
+                <div class="flex flex-col md:flex-row gap-4">
+                    <div class="flex-1">
+                        <label for="citySelect" class="block text-primary text-left mb-2 font-medium">Select City</label>
+                        <select id="citySelect" class="w-full p-3 rounded-lg border border-gray-300 bg-white text-primary">
+                            <option value="">Choose your city</option>
+                            <option value="new-york">New York</option>
+                            <option value="los-angeles">Los Angeles</option>
+                            <option value="chicago">Chicago</option>
+                            <option value="houston">Houston</option>
+                            <option value="philadelphia">Philadelphia</option>
+                        </select>
+                    </div>
+                    <div class="flex-1">
+                        <label for="causeSelect" class="block text-primary text-left mb-2 font-medium">Filter by Cause</label>
+                        <select id="causeSelect" class="w-full p-3 rounded-lg border border-gray-300 bg-white text-primary">
+                            <option value="">All Causes</option>
+                            <option value="environment">Environment</option>
+                            <option value="education">Education</option>
+                            <option value="homelessness">Homelessness</option>
+                            <option value="animals">Animal Welfare</option>
+                            <option value="health">Health</option>
+                            <option value="arts">Arts & Culture</option>
+                        </select>
+                    </div>
+                    <button class="bg-action text-primary px-6 py-3 rounded-lg font-bold hover:bg-opacity-90 transition self-end">Search</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Causes Section -->
+    <section class="py-16 px-6 bg-white">
+        <div class="container mx-auto">
+            <h2 class="text-3xl font-bold mb-12 text-center">Support Causes You Care About</h2>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                <div class="cause-card bg-secondary rounded-xl p-6 text-center cursor-pointer transition duration-300 shadow-md">
+                    <div class="w-16 h-16 bg-highlight rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-leaf text-2xl text-primary"></i>
+                    </div>
+                    <h3 class="font-bold">Environment</h3>
+                </div>
+                
+                <div class="cause-card bg-secondary rounded-xl p-6 text-center cursor-pointer transition duration-300 shadow-md">
+                    <div class="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-graduation-cap text-2xl text-primary"></i>
+                    </div>
+                    <h3 class="font-bold">Education</h3>
+                </div>
+                
+                <div class="cause-card bg-secondary rounded-xl p-6 text-center cursor-pointer transition duration-300 shadow-md">
+                    <div class="w-16 h-16 bg-action rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-home text-2xl text-primary"></i>
+                    </div>
+                    <h3 class="font-bold">Housing</h3>
+                </div>
+                
+                <div class="cause-card bg-secondary rounded-xl p-6 text-center cursor-pointer transition duration-300 shadow-md">
+                    <div class="w-16 h-16 bg-highlight rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-heartbeat text-2xl text-primary"></i>
+                    </div>
+                    <h3 class="font-bold">Health</h3>
+                </div>
+                
+                <div class="cause-card bg-secondary rounded-xl p-6 text-center cursor-pointer transition duration-300 shadow-md">
+                    <div class="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-paw text-2xl text-primary"></i>
+                    </div>
+                    <h3 class="font-bold">Animals</h3>
+                </div>
+                
+                <div class="cause-card bg-secondary rounded-xl p-6 text-center cursor-pointer transition duration-300 shadow-md">
+                    <div class="w-16 h-16 bg-action rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-utensils text-2xl text-primary"></i>
+                    </div>
+                    <h3 class="font-bold">Hunger</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Upcoming Events -->
+    <section class="py-16 px-6 bg-secondary">
+        <div class="container mx-auto">
+            <div class="flex justify-between items-center mb-12">
+                <h2 class="text-3xl font-bold">Upcoming Events</h2>
+                <a href="#" class="text-accent font-medium hover:underline">View all events</a>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Event 1 -->
+                <div class="event-card bg-white rounded-xl overflow-hidden shadow-md transition duration-300">
+                    <div class="h-40 bg-highlight flex items-center justify-center">
+                        <i class="fas fa-tree text-6xl text-primary opacity-20"></i>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-bold text-xl">Community Park Cleanup</h3>
+                            <span class="bg-accent text-primary text-xs px-2 py-1 rounded-full">Environment</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Join us to clean and revitalize Central Park's north end.</p>
+                        
+                        <div class="flex items-center text-gray-500 mb-4">
+                            <i class="fas fa-calendar-alt mr-2"></i>
+                            <span>Sat, June 10 • 9:00 AM</span>
+                        </div>
+                        
+                        <div class="flex items-center text-gray-500 mb-6">
+                            <i class="fas fa-map-marker-alt mr-2"></i>
+                            <span>Central Park, New York</span>
+                        </div>
+                        
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <i class="fas fa-users mr-2 text-gray-500"></i>
+                                <span class="text-sm">12/30 spots left</span>
+                            </div>
+                            <button class="bg-action text-primary px-4 py-2 rounded-lg text-sm font-medium hover:bg-opacity-90 transition">RSVP</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Event 2 -->
+                <div class="event-card bg-white rounded-xl overflow-hidden shadow-md transition duration-300">
+                    <div class="h-40 bg-accent flex items-center justify-center">
+                        <i class="fas fa-book text-6xl text-primary opacity-20"></i>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-bold text-xl">Literacy Tutoring Session</h3>
+                            <span class="bg-highlight text-primary text-xs px-2 py-1 rounded-full">Education</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Help adults improve their reading skills at our weekly session.</p>
+                        
+                        <div class="flex items-center text-gray-500 mb-4">
+                            <i class="fas fa-calendar-alt mr-2"></i>
+                            <span>Every Wednesday • 4:00 PM</span>
+                        </div>
+                        
+                        <div class="flex items-center text-gray-500 mb-6">
+                            <i class="fas fa-map-marker-alt mr-2"></i>
+                            <span>Public Library, Brooklyn</span>
+                        </div>
+                        
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <i class="fas fa-users mr-2 text-gray-500"></i>
+                                <span class="text-sm">5/10 spots left</span>
+                            </div>
+                            <button class="bg-action text-primary px-4 py-2 rounded-lg text-sm font-medium hover:bg-opacity-90 transition">RSVP</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Event 3 -->
+                <div class="event-card bg-white rounded-xl overflow-hidden shadow-md transition duration-300">
+                    <div class="h-40 bg-action flex items-center justify-center">
+                        <i class="fas fa-utensils text-6xl text-primary opacity-20"></i>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-bold text-xl">Soup Kitchen Volunteers</h3>
+                            <span class="bg-highlight text-primary text-xs px-2 py-1 rounded-full">Hunger</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Help prepare and serve meals to those in need.</p>
+                        
+                        <div class="flex items-center text-gray-500 mb-4">
+                            <i class="fas fa-calendar-alt mr-2"></i>
+                            <span>Sun, June 11 • 11:00 AM</span>
+                        </div>
+                        
+                        <div class="flex items-center text-gray-500 mb-6">
+                            <i class="fas fa-map-marker-alt mr-2"></i>
+                            <span>Hope Center, Manhattan</span>
+                        </div>
+                        
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <i class="fas fa-users mr-2 text-gray-500"></i>
+                                <span class="text-sm">8/15 spots left</span>
+                            </div>
+                            <button class="bg-action text-primary px-4 py-2 rounded-lg text-sm font-medium hover:bg-opacity-90 transition">RSVP</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Organizations -->
+    <section class="py-16 px-6 bg-white">
+        <div class="container mx-auto">
+            <div class="flex justify-between items-center mb-12">
+                <h2 class="text-3xl font-bold">Featured Organizations</h2>
+                <a href="#" class="text-accent font-medium hover:underline">View all organizations</a>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Org 1 -->
+                <div class="organization-card bg-secondary rounded-xl overflow-hidden shadow-md transition duration-300">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="org-logo w-16 h-16 bg-highlight rounded-full flex items-center justify-center mr-4 transition duration-300">
+                                <i class="fas fa-tree text-2xl text-primary"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg">Green Earth Alliance</h3>
+                                <p class="text-sm text-gray-600">Environmental Conservation</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 mb-4">Dedicated to preserving urban green spaces and promoting sustainable practices in local communities.</p>
+                        
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="bg-primary text-secondary text-xs px-2 py-1 rounded-full">Environment</span>
+                            <span class="bg-primary text-secondary text-xs px-2 py-1 rounded-full">Sustainability</span>
+                            <span class="bg-primary text-secondary text-xs px-2 py-1 rounded-full">Community</span>
+                        </div>
+                        
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <i class="fas fa-users mr-2 text-gray-500"></i>
+                                <span class="text-sm">1.2k volunteers</span>
+                            </div>
+                            <button class="bg-primary text-secondary px-4 py-2 rounded-lg text-sm font-medium hover:bg-opacity-90 transition">View Profile</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Org 2 -->
+                <div class="organization-card bg-secondary rounded-xl overflow-hidden shadow-md transition duration-300">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="org-logo w-16 h-16 bg-accent rounded-full flex items-center justify-center mr-4 transition duration-300">
+                                <i class="fas fa-book text-2xl text-primary"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg">Literacy for All</h3>
+                                <p class="text-sm text-gray-600">Education Nonprofit</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 mb-4">Providing free literacy programs for adults and children in underserved communities.</p>
+                        
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="bg-primary text-secondary text-xs px-2 py-1 rounded-full">Education</span>
+                            <span class="bg-primary text-secondary text-xs px-2 py-1 rounded-full">Children</span>
+                            <span class="bg-primary text-secondary text-xs px-2 py-1 rounded-full">Equity</span>
+                        </div>
+                        
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <i class="fas fa-users mr-2 text-gray-500"></i>
+                                <span class="text-sm">850 volunteers</span>
+                            </div>
+                            <button class="bg-primary text-secondary px-4 py-2 rounded-lg text-sm font-medium hover:bg-opacity-90 transition">View Profile</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Org 3 -->
+                <div class="organization-card bg-secondary rounded-xl overflow-hidden shadow-md transition duration-300">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="org-logo w-16 h-16 bg-action rounded-full flex items-center justify-center mr-4 transition duration-300">
+                                <i class="fas fa-home text-2xl text-primary"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg">Haven Housing</h3>
+                                <p class="text-sm text-gray-600">Homelessness Solutions</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 mb-4">Working to provide shelter and support services to individuals experiencing homelessness.</p>
+                        
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="bg-primary text-secondary text-xs px-2 py-1 rounded-full">Housing</span>
+                            <span class="bg-primary text-secondary text-xs px-2 py-1 rounded-full">Community</span>
+                            <span class="bg-primary text-secondary text-xs px-2 py-1 rounded-full">Support</span>
+                        </div>
+                        
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <i class="fas fa-users mr-2 text-gray-500"></i>
+                                <span class="text-sm">2.3k volunteers</span>
+                            </div>
+                            <button class="bg-primary text-secondary px-4 py-2 rounded-lg text-sm font-medium hover:bg-opacity-90 transition">View Profile</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Community Groups -->
+    <section class="py-16 px-6 bg-secondary">
+        <div class="container mx-auto">
+            <div class="flex justify-between items-center mb-12">
+                <h2 class="text-3xl font-bold">Community Groups</h2>
+                <a href="#" class="text-accent font-medium hover:underline">View all groups</a>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Group 1 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-md p-6">
+                    <div class="w-16 h-16 bg-highlight rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-recycle text-2xl text-primary"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-center mb-2">Zero Waste NYC</h3>
+                    <p class="text-gray-600 text-sm text-center mb-4">Discussing sustainable living and waste reduction strategies.</p>
+                    <div class="flex justify-center">
+                        <button class="bg-primary text-secondary px-4 py-2 rounded-lg text-sm font-medium hover:bg-opacity-90 transition">Join Group</button>
+                    </div>
+                </div>
+                
+                <!-- Group 2 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-md p-6">
+                    <div class="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-dog text-2xl text-primary"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-center mb-2">Animal Rescue Network</h3>
+                    <p class="text-gray-600 text-sm text-center mb-4">Connecting animal lovers with rescue organizations.</p>
+                    <div class="flex justify-center">
+                        <button class="bg-primary text-secondary px-4 py-2 rounded-lg text-sm font-medium hover:bg-opacity-90 transition">Join Group</button>
+                    </div>
+                </div>
+                
+                <!-- Group 3 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-md p-6">
+                    <div class="w-16 h-16 bg-action rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-child text-2xl text-primary"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-center mb-2">Youth Mentors Collective</h3>
+                    <p class="text-gray-600 text-sm text-center mb-4">Mentoring the next generation through education and support.</p>
+                    <div class="flex justify-center">
+                        <button class="bg-primary text-secondary px-4 py-2 rounded-lg text-sm font-medium hover:bg-opacity-90 transition">Join Group</button>
+                    </div>
+                </div>
+                
+                <!-- Group 4 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-md p-6">
+                    <div class="w-16 h-16 bg-highlight rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-utensils text-2xl text-primary"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-center mb-2">Food Justice Advocates</h3>
+                    <p class="text-gray-600 text-sm text-center mb-4">Working to eliminate food insecurity in our communities.</p>
+                    <div class="flex justify-center">
+                        <button class="bg-primary text-secondary px-4 py-2 rounded-lg text-sm font-medium hover:bg-opacity-90 transition">Join Group</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="py-20 px-6 bg-primary text-secondary">
+        <div class="container mx-auto text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready to make an impact?</h2>
+            <p class="text-xl mb-10 max-w-2xl mx-auto">Create your profile to connect with organizations, RSVP to events, and join community groups.</p>
+            <button class="bg-accent text-primary px-8 py-4 rounded-full text-lg font-bold hover:bg-opacity-90 transition shadow-lg">Get Started</button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-primary text-secondary py-12 px-6">
+        <div class="container mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <i class="fas fa-hands-helping text-2xl text-accent"></i>
+                        <span class="text-xl font-bold">CommunityConnect</span>
+                    </div>
+                    <p class="text-gray-400">Connecting volunteers with organizations making a difference.</p>
+                </div>
+                
+                <div>
+                    <h3 class="font-bold text-lg mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-accent transition">Home</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-accent transition">About Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-accent transition">Organizations</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-accent transition">Events</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-accent transition">Groups</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-bold text-lg mb-4">Support</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-accent transition">FAQ</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-accent transition">Contact Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-accent transition">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-accent transition">Terms of Service</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-bold text-lg mb-4">Connect With Us</h3>
+                    <div class="flex space-x-4 mb-4">
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-accent transition">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-accent transition">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-accent transition">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-accent transition">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                    <p class="text-gray-400">Subscribe to our newsletter</p>
+                    <div class="mt-2 flex">
+                        <input type="email" placeholder="Your email" class="bg-gray-800 text-white px-4 py-2 rounded-l-lg focus:outline-none flex-1">
+                        <button class="bg-accent text-primary px-4 py-2 rounded-r-lg">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-500">
+                <p>&copy; 2023 CommunityConnect. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl p-8 max-w-md w-full mx-4">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold">Sign In</h3>
+                <button id="closeModalBtn" class="text-2xl">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form>
+                <div class="mb-4">
+                    <label for="email" class="block text-gray-700 mb-2">Email</label>
+                    <input type="email" id="email" class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-accent">
+                </div>
+                
+                <div class="mb-6">
+                    <label for="password" class="block text-gray-700 mb-2">Password</label>
+                    <input type="password" id="password" class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-accent">
+                </div>
+                
+                <button type="submit" class="w-full bg-accent text-primary py-3 rounded-lg font-bold hover:bg-opacity-90 transition mb-4">Sign In</button>
+                
+                <div class="text-center">
+                    <a href="#" class="text-accent hover:underline">Forgot password?</a>
+                    <p class="mt-4">Don't have an account? <a href="#" class="text-accent font-medium hover:underline">Sign up</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Mobile menu functionality
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const closeDrawerBtn = document.getElementById('closeDrawerBtn');
+        const mobileDrawer = document.getElementById('mobileDrawer');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileDrawer.classList.remove('drawer-closed');
+        });
+        
+        closeDrawerBtn.addEventListener('click', () => {
+            mobileDrawer.classList.add('drawer-closed');
+        });
+
+        // Login modal functionality
+        const loginBtn = document.getElementById('loginBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const loginModal = document.getElementById('loginModal');
+        
+        loginBtn.addEventListener('click', () => {
+            loginModal.classList.remove('hidden');
+        });
+        
+        closeModalBtn.addEventListener('click', () => {
+            loginModal.classList.add('hidden');
+        });
+        
+        // Close modal when clicking outside
+        loginModal.addEventListener('click', (e) => {
+            if (e.target === loginModal) {
+                loginModal.classList.add('hidden');
+            }
+        });
+
+        // Tab functionality for organization profiles (example)
+        const tabs = document.querySelectorAll('.tab-button');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('tab-active'));
+                tab.classList.add('tab-active');
+                
+                // Here you would add code to show the corresponding content
+            });
+        });
+
+        // City and cause filter functionality
+        const citySelect = document.getElementById('citySelect');
+        const causeSelect = document.getElementById('causeSelect');
+        
+        citySelect.addEventListener('change', updateFilters);
+        causeSelect.addEventListener('change', updateFilters);
+        
+        function updateFilters() {
+            const city = citySelect.value;
+            const cause = causeSelect.value;
+            
+            // Here you would add code to filter the displayed content
+            // based on the selected city and cause
+            console.log(`Filtering by city: ${city}, cause: ${cause}`);
+        }
+    </script>
+</body>
+</html>

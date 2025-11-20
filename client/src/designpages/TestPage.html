@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevDaily - Developer Planner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .task-item:hover .task-actions {
+            opacity: 1;
+        }
+        .knowledge-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .priority-high {
+            border-left: 4px solid #ef4444;
+        }
+        .priority-medium {
+            border-left: 4px solid #f59e0b;
+        }
+        .priority-low {
+            border-left: 4px solid #10b981;
+        }
+        .progress-bar {
+            height: 6px;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
+        <!-- Header -->
+        <header class="mb-8">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-3xl font-bold text-indigo-700">DevDaily</h1>
+                    <p class="text-gray-600">Your developer productivity companion</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <input type="text" placeholder="Search..." class="pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold cursor-pointer hover:bg-indigo-200 transition">
+                        <span>JD</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-6 flex justify-between items-center">
+                <div>
+                    <h2 class="text-2xl font-semibold">Today's Plan</h2>
+                    <p class="text-gray-500" id="current-date">Loading date...</p>
+                </div>
+                <button id="new-task-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg flex items-center transition">
+                    <i class="fas fa-plus mr-2"></i> New Task
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Left Column - Tasks -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Tabs -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="flex border-b border-gray-200">
+                        <button class="tab-btn px-4 py-3 font-medium text-gray-700 hover:text-indigo-600 transition active" data-tab="tasks">Tasks</button>
+                        <button class="tab-btn px-4 py-3 font-medium text-gray-700 hover:text-indigo-600 transition" data-tab="projects">Projects</button>
+                        <button class="tab-btn px-4 py-3 font-medium text-gray-700 hover:text-indigo-600 transition" data-tab="knowledge">Knowledge Base</button>
+                    </div>
+                    
+                    <!-- Tasks Tab Content -->
+                    <div id="tasks" class="tab-content active p-4">
+                        <div class="mb-4 flex justify-between items-center">
+                            <h3 class="font-medium">My Tasks</h3>
+                            <div class="flex space-x-2">
+                                <button class="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded transition">All</button>
+                                <button class="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded transition">Today</button>
+                                <button class="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded transition">Upcoming</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Task List -->
+                        <div class="space-y-3" id="task-list">
+                            <!-- Task items will be added here by JavaScript -->
+                        </div>
+                        
+                        <!-- Completed Tasks -->
+                        <div class="mt-8">
+                            <div class="flex items-center mb-3">
+                                <h4 class="font-medium text-gray-700">Completed (2)</h4>
+                                <div class="ml-2 w-full h-px bg-gray-200"></div>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="bg-gray-50 p-3 rounded-lg flex items-center">
+                                    <input type="checkbox" checked class="mr-3 h-5 w-5 text-indigo-600 rounded border-gray-300">
+                                    <div class="flex-1">
+                                        <p class="text-gray-500 line-through">Fix authentication bug in login API</p>
+                                        <div class="flex items-center mt-1 text-xs text-gray-400">
+                                            <span>Project: Auth Service</span>
+                                            <span class="mx-2">•</span>
+                                            <span>Completed: Today</span>
+                                        </div>
+                                    </div>
+                                    <button class="text-gray-400 hover:text-gray-600 transition">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Projects Tab Content -->
+                    <div id="projects" class="tab-content p-4">
+                        <div class="mb-6">
+                            <h3 class="font-medium mb-4">Active Projects</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <!-- Project Card 1 -->
+                                <div class="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
+                                    <div class="flex justify-between items-start mb-3">
+                                        <h4 class="font-medium">E-commerce Platform</h4>
+                                        <span class="text-xs px-2 py-1 bg-indigo-100 text-indigo-800 rounded-full">Development</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mb-4">Building a new e-commerce platform with React and Node.js</p>
+                                    <div class="mb-3">
+                                        <div class="flex justify-between text-xs text-gray-500 mb-1">
+                                            <span>Progress</span>
+                                            <span>65%</span>
+                                        </div>
+                                        <div class="w-full bg-gray-200 rounded-full h-2">
+                                            <div class="bg-indigo-600 h-2 rounded-full" style="width: 65%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between items-center text-xs text-gray-500">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-calendar-alt mr-1"></i>
+                                            <span>Due: Jun 30</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <i class="fas fa-tasks mr-1"></i>
+                                            <span>4/7 tasks</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Project Card 2 -->
+                                <div class="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
+                                    <div class="flex justify-between items-start mb-3">
+                                        <h4 class="font-medium">API Documentation</h4>
+                                        <span class="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full">Documentation</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mb-4">Create comprehensive documentation for our public APIs</p>
+                                    <div class="mb-3">
+                                        <div class="flex justify-between text-xs text-gray-500 mb-1">
+                                            <span>Progress</span>
+                                            <span>30%</span>
+                                        </div>
+                                        <div class="w-full bg-gray-200 rounded-full h-2">
+                                            <div class="bg-green-500 h-2 rounded-full" style="width: 30%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between items-center text-xs text-gray-500">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-calendar-alt mr-1"></i>
+                                            <span>Due: Jul 15</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <i class="fas fa-tasks mr-1"></i>
+                                            <span>2/8 tasks</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3 class="font-medium mb-4">Project Tasks</h3>
+                            <div class="space-y-3">
+                                <div class="bg-white border border-gray-200 rounded-lg p-3 flex items-start">
+                                    <input type="checkbox" class="mt-1 mr-3 h-5 w-5 text-indigo-600 rounded border-gray-300">
+                                    <div class="flex-1">
+                                        <p class="font-medium">Implement payment gateway</p>
+                                        <p class="text-sm text-gray-600">E-commerce Platform</p>
+                                        <div class="flex items-center mt-2 text-xs text-gray-500">
+                                            <span class="mr-3"><i class="fas fa-calendar-alt mr-1"></i> Due: Tomorrow</span>
+                                            <span><i class="fas fa-flag mr-1 text-red-500"></i> High</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <button class="text-gray-400 hover:text-indigo-600 transition">
+                                            <i class="fas fa-pencil-alt"></i>
+                                        </button>
+                                        <button class="text-gray-400 hover:text-red-600 transition">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-white border border-gray-200 rounded-lg p-3 flex items-start">
+                                    <input type="checkbox" class="mt-1 mr-3 h-5 w-5 text-indigo-600 rounded border-gray-300">
+                                    <div class="flex-1">
+                                        <p class="font-medium">Write authentication API docs</p>
+                                        <p class="text-sm text-gray-600">API Documentation</p>
+                                        <div class="flex items-center mt-2 text-xs text-gray-500">
+                                            <span class="mr-3"><i class="fas fa-calendar-alt mr-1"></i> Due: Friday</span>
+                                            <span><i class="fas fa-flag mr-1 text-yellow-500"></i> Medium</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <button class="text-gray-400 hover:text-indigo-600 transition">
+                                            <i class="fas fa-pencil-alt"></i>
+                                        </button>
+                                        <button class="text-gray-400 hover:text-red-600 transition">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Knowledge Base Tab Content -->
+                    <div id="knowledge" class="tab-content p-4">
+                        <div class="mb-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="font-medium">My Knowledge Base</h3>
+                                <button id="new-knowledge-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 text-sm rounded-lg flex items-center transition">
+                                    <i class="fas fa-plus mr-1"></i> Add Resource
+                                </button>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="knowledge-list">
+                                <!-- Knowledge cards will be added here by JavaScript -->
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3 class="font-medium mb-4">Categories</h3>
+                            <div class="flex flex-wrap gap-2">
+                                <button class="px-3 py-1 text-sm bg-indigo-100 text-indigo-800 rounded-full hover:bg-indigo-200 transition">JavaScript</button>
+                                <button class="px-3 py-1 text-sm bg-green-100 text-green-800 rounded-full hover:bg-green-200 transition">React</button>
+                                <button class="px-3 py-1 text-sm bg-blue-100 text-blue-800 rounded-full hover:bg-blue-200 transition">Node.js</button>
+                                <button class="px-3 py-1 text-sm bg-purple-100 text-purple-800 rounded-full hover:bg-purple-200 transition">CSS</button>
+                                <button class="px-3 py-1 text-sm bg-yellow-100 text-yellow-800 rounded-full hover:bg-yellow-200 transition">Performance</button>
+                                <button class="px-3 py-1 text-sm bg-red-100 text-red-800 rounded-full hover:bg-red-200 transition">Security</button>
+                                <button class="px-3 py-1 text-sm bg-gray-100 text-gray-800 rounded-full hover:bg-gray-200 transition">Other</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Column - Stats & Quick Add -->
+            <div class="space-y-6">
+                <!-- Daily Stats -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+                    <h3 class="font-medium mb-4">Today's Stats</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-gray-600">Tasks Completed</span>
+                                <span class="font-medium">2/8</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-indigo-600 h-2 rounded-full" style="width: 25%"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-gray-600">Focus Time</span>
+                                <span class="font-medium">2h 45m</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-green-500 h-2 rounded-full" style="width: 55%"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-gray-600">Pomodoros</span>
+                                <span class="font-medium">5</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-yellow-500 h-2 rounded-full" style="width: 50%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 pt-4 border-t border-gray-200">
+                        <h4 class="text-sm font-medium mb-2">Quick Actions</h4>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button class="text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded hover:bg-indigo-200 transition flex items-center justify-center">
+                                <i class="fas fa-stopwatch mr-1"></i> Timer
+                            </button>
+                            <button class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded hover:bg-green-200 transition flex items-center justify-center">
+                                <i class="fas fa-book mr-1"></i> Journal
+                            </button>
+                            <button class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded hover:bg-blue-200 transition flex items-center justify-center">
+                                <i class="fas fa-calendar mr-1"></i> Schedule
+                            </button>
+                            <button class="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded hover:bg-purple-200 transition flex items-center justify-center">
+                                <i class="fas fa-chart-bar mr-1"></i> Reports
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Upcoming Deadlines -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+                    <h3 class="font-medium mb-4">Upcoming Deadlines</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-start">
+                            <div class="mr-3 mt-1">
+                                <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
+                                    <i class="fas fa-code-branch text-sm"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="font-medium text-sm">Code Review</p>
+                                <p class="text-xs text-gray-500">PR #124 - User Auth</p>
+                                <p class="text-xs text-gray-500 mt-1"><i class="fas fa-clock mr-1"></i> Today, 3:00 PM</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="mr-3 mt-1">
+                                <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600">
+                                    <i class="fas fa-calendar-check text-sm"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="font-medium text-sm">Sprint Planning</p>
+                                <p class="text-xs text-gray-500">Q3 Roadmap</p>
+                                <p class="text-xs text-gray-500 mt-1"><i class="fas fa-clock mr-1"></i> Tomorrow, 10:00 AM</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="mr-3 mt-1">
+                                <div class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-600">
+                                    <i class="fas fa-bug text-sm"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="font-medium text-sm">Bug Fix Deadline</p>
+                                <p class="text-xs text-gray-500">#BUG-421 - Memory leak</p>
+                                <p class="text-xs text-gray-500 mt-1"><i class="fas fa-clock mr-1"></i> Friday, EOD</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Resources -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+                    <h3 class="font-medium mb-4">Recent Resources</h3>
+                    <div class="space-y-3">
+                        <a href="#" class="block group">
+                            <div class="flex items-start">
+                                <div class="mr-3 mt-1">
+                                    <div class="w-8 h-8 rounded bg-blue-100 flex items-center justify-center text-blue-600">
+                                        <i class="fas fa-link text-sm"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="font-medium text-sm group-hover:text-blue-600 transition">React Performance Optimization</p>
+                                    <p class="text-xs text-gray-500 truncate">https://reactjs.org/docs/optimizing-performance.html</p>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="block group">
+                            <div class="flex items-start">
+                                <div class="mr-3 mt-1">
+                                    <div class="w-8 h-8 rounded bg-purple-100 flex items-center justify-center text-purple-600">
+                                        <i class="fas fa-file-alt text-sm"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="font-medium text-sm group-hover:text-purple-600 transition">JWT Best Practices</p>
+                                    <p class="text-xs text-gray-500">Saved note from security workshop</p>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="block group">
+                            <div class="flex items-start">
+                                <div class="mr-3 mt-1">
+                                    <div class="w-8 h-8 rounded bg-green-100 flex items-center justify-center text-green-600">
+                                        <i class="fas fa-video text-sm"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="font-medium text-sm group-hover:text-green-600 transition">TypeScript Advanced Patterns</p>
+                                    <p class="text-xs text-gray-500">YouTube tutorial by Fireship</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modals -->
+    <!-- New Task Modal -->
+    <div id="task-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg w-full max-w-md mx-4">
+            <div class="p-4 border-b border-gray-200">
+                <h3 class="font-medium">Add New Task</h3>
+            </div>
+            <div class="p-4">
+                <form id="task-form">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Task Name</label>
+                        <input type="text" id="task-name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                        <textarea id="task-description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Due Date</label>
+                            <input type="date" id="task-due" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+                            <select id="task-priority" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <option value="low">Low</option>
+                                <option value="medium">Medium</option>
+                                <option value="high">High</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Project</label>
+                        <select id="task-project" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="">No Project</option>
+                            <option value="E-commerce Platform">E-commerce Platform</option>
+                            <option value="API Documentation">API Documentation</option>
+                            <option value="Mobile App">Mobile App</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="p-4 border-t border-gray-200 flex justify-end space-x-3">
+                <button id="cancel-task" class="px-4 py-2 text-gray-600 hover:text-gray-800 transition">Cancel</button>
+                <button id="save-task" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition">Save Task</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- New Knowledge Modal -->
+    <div id="knowledge-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg w-full max-w-md mx-4">
+            <div class="p-4 border-b border-gray-200">
+                <h3 class="font-medium">Add to Knowledge Base</h3>
+            </div>
+            <div class="p-4">
+                <form id="knowledge-form">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                        <input type="text" id="knowledge-title" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                        <select id="knowledge-type" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="article">Article</option>
+                            <option value="video">Video</option>
+                            <option value="documentation">Documentation</option>
+                            <option value="bookmark">Bookmark</option>
+                            <option value="note">Note</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">URL or Content</label>
+                        <textarea id="knowledge-content" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Enter URL or notes..."></textarea>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Tags</label>
+                        <input type="text" id="knowledge-tags" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="react, javascript, performance">
+                    </div>
+                </form>
+            </div>
+            <div class="p-4 border-t border-gray-200 flex justify-end space-x-3">
+                <button id="cancel-knowledge" class="px-4 py-2 text-gray-600 hover:text-gray-800 transition">Cancel</button>
+                <button id="save-knowledge" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set current date
+        const now = new Date();
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', options);
+        
+        // Tab switching
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.getAttribute('data-tab');
+                
+                // Update active tab button
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                
+                // Show corresponding tab content
+                tabContents.forEach(content => {
+                    content.classList.remove('active');
+                    if (content.id === tabId) {
+                        content.classList.add('active');
+                    }
+                });
+            });
+        });
+        
+        // Task Modal
+        const taskModal = document.getElementById('task-modal');
+        const newTaskBtn = document.getElementById('new-task-btn');
+        const cancelTaskBtn = document.getElementById('cancel-task');
+        const saveTaskBtn = document.getElementById('save-task');
+        const taskForm = document.getElementById('task-form');
+        
+        newTaskBtn.addEventListener('click', () => {
+            taskModal.classList.remove('hidden');
+        });
+        
+        cancelTaskBtn.addEventListener('click', () => {
+            taskModal.classList.add('hidden');
+            taskForm.reset();
+        });
+        
+        saveTaskBtn.addEventListener('click', () => {
+            if (taskForm.checkValidity()) {
+                addNewTask();
+                taskModal.classList.add('hidden');
+                taskForm.reset();
+            } else {
+                taskForm.reportValidity();
+            }
+        });
+        
+        // Knowledge Modal
+        const knowledgeModal = document.getElementById('knowledge-modal');
+        const newKnowledgeBtn = document.getElementById('new-knowledge-btn');
+        const cancelKnowledgeBtn = document.getElementById('cancel-knowledge');
+        const saveKnowledgeBtn = document.getElementById('save-knowledge');
+        const knowledgeForm = document.getElementById('knowledge-form');
+        
+        newKnowledgeBtn.addEventListener('click', () => {
+            knowledgeModal.classList.remove('hidden');
+        });
+        
+        cancelKnowledgeBtn.addEventListener('click', () => {
+            knowledgeModal.classList.add('hidden');
+            knowledgeForm.reset();
+        });
+        
+        saveKnowledgeBtn.addEventListener('click', () => {
+            if (knowledgeForm.checkValidity()) {
+                addNewKnowledge();
+                knowledgeModal.classList.add('hidden');
+                knowledgeForm.reset();
+            } else {
+                knowledgeForm.reportValidity();
+            }
+        });
+        
+        // Sample tasks data
+        const tasks = [
+            {
+                id: 1,
+                name: "Fix authentication bug",
+                description: "Users can't login after password reset",
+                due: "2023-06-15",
+                priority: "high",
+                project: "E-commerce Platform",
+                completed: false
+            },
+            {
+                id: 2,
+                name: "Implement dark mode",
+                description: "Add dark mode toggle to settings page",
+                due: "2023-06-18",
+                priority: "medium",
+                project: "Mobile App",
+                completed: false
+            },
+            {
+                id: 3,
+                name: "Update dependencies",
+                description: "Run npm audit and update vulnerable packages",
+                due: "2023-06-20",
+                priority: "low",
+                project: "",
+                completed: false
+            }
+        ];
+        
+        // Sample knowledge data
+        const knowledgeItems = [
+            {
+                id: 1,
+                title: "React Hooks Guide",
+                type: "documentation",
+                content: "https://reactjs.org/docs/hooks-intro.html",
+                tags: "react, hooks, javascript"
+            },
+            {
+                id: 2,
+                title: "CSS Grid Tutorial",
+                type: "article",
+                content: "https://css-tricks.com/snippets/css/complete-guide-grid/",
+                tags: "css, layout, grid"
+            },
+            {
+                id: 3,
+                title: "Node.js Best Practices",
+                type: "article",
+                content: "https://github.com/goldbergyoni/nodebestpractices",
+                tags: "node, backend, javascript"
+            }
+        ];
+        
+        // Render tasks
+        function renderTasks() {
+            const taskList = document.getElementById('task-list');
+            taskList.innerHTML = '';
+            
+            tasks.filter(task => !task.completed).forEach(task => {
+                const priorityClass = `priority-${task.priority}`;
+                const priorityIcon = task.priority === 'high' ? 'fa-flag text-red-500' : 
+                                    task.priority === 'medium' ? 'fa-flag text-yellow-500' : 
+                                    'fa-flag text-green-500';
+                
+                const taskElement = document.createElement('div');
+                taskElement.className = `bg-white border border-gray-200 rounded-lg p-3 flex items-start task-item ${priorityClass}`;
+                taskElement.innerHTML = `
+                    <input type="checkbox" data-id="${task.id}" class="mt-1 mr-3 h-5 w-5 text-indigo-600 rounded border-gray-300">
+                    <div class="flex-1">
+                        <p class="font-medium">${task.name}</p>
+                        ${task.description ? `<p class="text-sm text-gray-600 mt-1">${task.description}</p>` : ''}
+                        <div class="flex items-center mt-2 text-xs text-gray-500">
+                            ${task.project ? `<span class="mr-3"><i class="fas fa-project-diagram mr-1"></i> ${task.project}</span>` : ''}
+                            ${task.due ? `<span class="mr-3"><i class="fas fa-calendar-alt mr-1"></i> ${formatDate(task.due)}</span>` : ''}
+                            <span><i class="fas ${priorityIcon} mr-1"></i> ${capitalizeFirstLetter(task.priority)}</span>
+                        </div>
+                    </div>
+                    <div class="flex space-x-2 task-actions opacity-0 transition">
+                        <button class="text-gray-400 hover:text-indigo-600 transition edit-task" data-id="${task.id}">
+                            <i class="fas fa-pencil-alt"></i>
+                        </button>
+                        <button class="text-gray-400 hover:text-red-600 transition delete-task" data-id="${task.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                
+                taskList.appendChild(taskElement);
+            });
+            
+            // Add event listeners for checkboxes
+            document.querySelectorAll('#task-list input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const taskId = parseInt(this.getAttribute('data-id'));
+                    completeTask(taskId);
+                });
+            });
+            
+            // Add event listeners for edit buttons
+            document.querySelectorAll('.edit-task').forEach(button => {
+                button.addEventListener('click', function() {
+                    const taskId = parseInt(this.getAttribute('data-id'));
+                    editTask(taskId);
+                });
+            });
+            
+            // Add event listeners for delete buttons
+            document.querySelectorAll('.delete-task').forEach(button => {
+                button.addEventListener('click', function() {
+                    const taskId = parseInt(this.getAttribute('data-id'));
+                    deleteTask(taskId);
+                });
+            });
+        }
+        
+        // Render knowledge items
+        function renderKnowledge() {
+            const knowledgeList = document.getElementById('knowledge-list');
+            knowledgeList.innerHTML = '';
+            
+            knowledgeItems.forEach(item => {
+                let iconClass, bgClass;
+                switch(item.type) {
+                    case 'article':
+                        iconClass = 'fa-file-alt';
+                        bgClass = 'bg-blue-100 text-blue-600';
+                        break;
+                    case 'video':
+                        iconClass = 'fa-video';
+                        bgClass = 'bg-red-100 text-red-600';
+                        break;
+                    case 'documentation':
+                        iconClass = 'fa-book';
+                        bgClass = 'bg-purple-100 text-purple-600';
+                        break;
+                    case 'bookmark':
+                        iconClass = 'fa-link';
+                        bgClass = 'bg-green-100 text-green-600';
+                        break;
+                    default:
+                        iconClass = 'fa-sticky-note';
+                        bgClass = 'bg-gray-100 text-gray-600';
+                }
+                
+                const knowledgeElement = document.createElement('div');
+                knowledgeElement.className = 'bg-white border border-gray-200 rounded-lg p-4 knowledge-card transition cursor-pointer hover:shadow-md';
+                knowledgeElement.innerHTML = `
+                    <div class="flex items-start mb-3">
+                        <div class="mr-3">
+                            <div class="w-10 h-10 rounded-full ${bgClass} flex items-center justify-center">
+                                <i class="fas ${iconClass}"></i>
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-medium">${item.title}</h4>
+                            <p class="text-sm text-gray-600 truncate">${item.content}</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-1">
+                        ${item.tags.split(', ').map(tag => `
+                            <span class="text-xs px-2 py-1 bg-gray-100 text-gray-800 rounded-full">${tag}</span>
+                        `).join('')}
+                    </div>
+                    <div class="mt-3 pt-2 border-t border-gray-100 flex justify-between items-center">
+                        <span class="text-xs text-gray-500 capitalize">${item.type}</span>
+                        <div class="flex space-x-2">
+                            <button class="text-gray-400 hover:text-indigo-600 transition edit-knowledge" data-id="${item.id}">
+                                <i class="fas fa-pencil-alt text-sm"></i>
+                            </button>
+                            <button class="text-gray-400 hover:text-red-600 transition delete-knowledge" data-id="${item.id}">
+                                <i class="fas fa-trash text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                knowledgeList.appendChild(knowledgeElement);
+            });
+            
+            // Add event listeners for edit buttons
+            document.querySelectorAll('.edit-knowledge').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const itemId = parseInt(this.getAttribute('data-id'));
+                    editKnowledge(itemId);
+                });
+            });
+            
+            // Add event listeners for delete buttons
+            document.querySelectorAll('.delete-knowledge').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const itemId = parseInt(this.getAttribute('data-id'));
+                    deleteKnowledge(itemId);
+                });
+            });
+            
+            // Add click event to open knowledge items
+            document.querySelectorAll('.knowledge-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const itemId = parseInt(this.querySelector('.edit-knowledge').getAttribute('data-id'));
+                    openKnowledge(itemId);
+                });
+            });
+        }
+        
+        // Add new task
+        function addNewTask() {
+            const newTask = {
+                id: tasks.length > 0 ? Math.max(...tasks.map(t => t.id)) + 1 : 1,
+                name: document.getElementById('task-name').value,
+                description: document.getElementById('task-description').value,
+                due: document.getElementById('task-due').value,
+                priority: document.getElementById('task-priority').value,
+                project: document.getElementById('task-project').value,
+                completed: false
+            };
+            
+            tasks.push(newTask);
+            renderTasks();
+        }
+        
+        // Add new knowledge item
+        function addNewKnowledge() {
+            const newItem = {
+                id: knowledgeItems.length > 0 ? Math.max(...knowledgeItems.map(i => i.id)) + 1 : 1,
+                title: document.getElementById('knowledge-title').value,
+                type: document.getElementById('knowledge-type').value,
+                content: document.getElementById('knowledge-content').value,
+                tags: document.getElementById('knowledge-tags').value
+            };
+            
+            knowledgeItems.push(newItem);
+            renderKnowledge();
+        }
+        
+        // Complete task
+        function completeTask(taskId) {
+            const taskIndex = tasks.findIndex(t => t.id === taskId);
+            if (taskIndex !== -1) {
+                tasks[taskIndex].completed = true;
+                renderTasks();
+            }
+        }
+        
+        // Edit task
+        function editTask(taskId) {
+            const task = tasks.find(t => t.id === taskId);
+            if (task) {
+                document.getElementById('task-name').value = task.name;
+                document.getElementById('task-description').value = task.description || '';
+                document.getElementById('task-due').value = task.due || '';
+                document.getElementById('task-priority').value = task.priority;
+                document.getElementById('task-project').value = task.project || '';
+                
+                // Change modal title
+                document.querySelector('#task-modal h3').textContent = 'Edit Task';
+                
+                // Change save button to update
+                const saveBtn = document.getElementById('save-task');
+                saveBtn.textContent = 'Update Task';
+                saveBtn.setAttribute('data-id', taskId);
+                
+                // Show modal
+                taskModal.classList.remove('hidden');
+            }
+        }
+        
+        // Edit knowledge item
+        function editKnowledge(itemId) {
+            const item = knowledgeItems.find(i => i.id === itemId);
+            if (item) {
+                document.getElementById('knowledge-title').value = item.title;
+                document.getElementById('knowledge-type').value = item.type;
+                document.getElementById('knowledge-content').value = item.content;
+                document.getElementById('knowledge-tags').value = item.tags;
+                
+                // Change modal title
+                document.querySelector('#knowledge-modal h3').textContent = 'Edit Resource';
+                
+                // Change save button to update
+                const saveBtn = document.getElementById('save-knowledge');
+                saveBtn.textContent = 'Update';
+                saveBtn.setAttribute('data-id', itemId);
+                
+                // Show modal
+                knowledgeModal.classList.remove('hidden');
+            }
+        }
+        
+        // Delete task
+        function deleteTask(taskId) {
+            if (confirm('Are you sure you want to delete this task?')) {
+                const taskIndex = tasks.findIndex(t => t.id === taskId);
+                if (taskIndex !== -1) {
+                    tasks.splice(taskIndex, 1);
+                    renderTasks();
+                }
+            }
+        }
+        
+        // Delete knowledge item
+        function deleteKnowledge(itemId) {
+            if (confirm('Are you sure you want to delete this resource?')) {
+                const itemIndex = knowledgeItems.findIndex(i => i.id === itemId);
+                if (itemIndex !== -1) {
+                    knowledgeItems.splice(itemIndex, 1);
+                    renderKnowledge();
+                }
+            }
+        }
+        
+        // Open knowledge item (would normally open in new tab or show details)
+        function openKnowledge(itemId) {
+            const item = knowledgeItems.find(i => i.id === itemId);
+            if (item) {
+                if (item.type !== 'note' && item.content.startsWith('http')) {
+                    window.open(item.content, '_blank');
+                } else {
+                    alert(`Showing details for: ${item.title}\n\n${item.content}`);
+                }
+            }
+        }
+        
+        // Helper function to format date
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const options = { month: 'short', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString('en-US', options);
+        }
+        
+        // Helper function to capitalize first letter
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+        
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTasks();
+            renderKnowledge();
+            
+            // Update save task button behavior when editing
+            document.getElementById('save-task').addEventListener('click', function() {
+                if (this.textContent === 'Update Task') {
+                    const taskId = parseInt(this.getAttribute('data-id'));
+                    updateTask(taskId);
+                }
+            });
+            
+            // Update save knowledge button behavior when editing
+            document.getElementById('save-knowledge').addEventListener('click', function() {
+                if (this.textContent === 'Update') {
+                    const itemId = parseInt(this.getAttribute('data-id'));
+                    updateKnowledge(itemId);
+                }
+            });
+        });
+        
+        // Update task
+        function updateTask(taskId) {
+            const taskIndex = tasks.findIndex(t => t.id === taskId);
+            if (taskIndex !== -1) {
+                tasks[taskIndex] = {
+                    id: taskId,
+                    name: document.getElementById('task-name').value,
+                    description: document.getElementById('task-description').value,
+                    due: document.getElementById('task-due').value,
+                    priority: document.getElementById('task-priority').value,
+                    project: document.getElementById('task-project').value,
+                    completed: tasks[taskIndex].completed
+                };
+                
+                renderTasks();
+                taskModal.classList.add('hidden');
+                document.querySelector('#task-modal h3').textContent = 'Add New Task';
+                document.getElementById('save-task').textContent = 'Save Task';
+                document.getElementById('save-task').removeAttribute('data-id');
+                taskForm.reset();
+            }
+        }
+        
+        // Update knowledge item
+        function updateKnowledge(itemId) {
+            const itemIndex = knowledgeItems.findIndex(i => i.id === itemId);
+            if (itemIndex !== -1) {
+                knowledgeItems[itemIndex] = {
+                    id: itemId,
+                    title: document.getElementById('knowledge-title').value,
+                    type: document.getElementById('knowledge-type').value,
+                    content: document.getElementById('knowledge-content').value,
+                    tags: document.getElementById('knowledge-tags').value
+                };
+                
+                renderKnowledge();
+                knowledgeModal.classList.add('hidden');
+                document.querySelector('#knowledge-modal h3').textContent = 'Add to Knowledge Base';
+                document.getElementById('save-knowledge').textContent = 'Save';
+                document.getElementById('save-knowledge').removeAttribute('data-id');
+                knowledgeForm.reset();
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevHub - Developer Productivity App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom dark theme colors */
+        .bg-dark {
+            background-color: #1a1a2e;
+        }
+        .bg-darker {
+            background-color: #16213e;
+        }
+        .bg-darkest {
+            background-color: #0f3460;
+        }
+        .text-accent {
+            color: #e94560;
+        }
+        .bg-accent {
+            background-color: #e94560;
+        }
+        .border-accent {
+            border-color: #e94560;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a1a2e;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e94560;
+            border-radius: 4px;
+        }
+        
+        /* Smooth transitions */
+        .transition-slow {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-dark text-gray-200 min-h-screen">
+    <!-- Mobile Menu Button -->
+    <div class="lg:hidden fixed top-4 right-4 z-50">
+        <button id="mobileMenuBtn" class="p-2 rounded-full bg-darkest hover:bg-accent transition-slow">
+            <i class="fas fa-bars text-xl"></i>
+        </button>
+    </div>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 w-64 bg-darker transform -translate-x-full lg:translate-x-0 transition-slow z-40">
+        <div class="flex items-center justify-center h-16 border-b border-darkest p-4">
+            <h1 class="text-xl font-bold text-accent">Dev<span class="text-white">Hub</span></h1>
+        </div>
+        <nav class="p-4">
+            <div class="mb-8">
+                <h2 class="text-sm uppercase tracking-wider text-gray-400 mb-4">Dashboard</h2>
+                <ul class="space-y-2">
+                    <li>
+                        <a href="#" class="flex items-center p-2 rounded hover:bg-darkest transition-slow">
+                            <i class="fas fa-home mr-3 text-accent"></i>
+                            <span>Overview</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center p-2 rounded bg-darkest transition-slow">
+                            <i class="fas fa-tasks mr-3 text-accent"></i>
+                            <span>Tasks</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center p-2 rounded hover:bg-darkest transition-slow">
+                            <i class="fas fa-project-diagram mr-3 text-accent"></i>
+                            <span>Projects</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center p-2 rounded hover:bg-darkest transition-slow">
+                            <i class="fas fa-book mr-3 text-accent"></i>
+                            <span>Knowledge Base</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center p-2 rounded hover:bg-darkest transition-slow">
+                            <i class="fas fa-users mr-3 text-accent"></i>
+                            <span>Forum</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            <div>
+                <h2 class="text-sm uppercase tracking-wider text-gray-400 mb-4">Projects</h2>
+                <ul class="space-y-2">
+                    <li>
+                        <a href="#" class="flex items-center p-2 rounded hover:bg-darkest transition-slow">
+                            <span class="w-3 h-3 rounded-full bg-blue-500 mr-3"></span>
+                            <span>API Integration</span>
+                            <span class="ml-auto bg-darkest text-xs px-2 py-1 rounded">5</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center p-2 rounded hover:bg-darkest transition-slow">
+                            <span class="w-3 h-3 rounded-full bg-green-500 mr-3"></span>
+                            <span>Frontend Redesign</span>
+                            <span class="ml-auto bg-darkest text-xs px-2 py-1 rounded">3</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center p-2 rounded hover:bg-darkest transition-slow">
+                            <span class="w-3 h-3 rounded-full bg-purple-500 mr-3"></span>
+                            <span>Database Migration</span>
+                            <span class="ml-auto bg-darkest text-xs px-2 py-1 rounded">8</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="ml-0 lg:ml-64 transition-slow">
+        <!-- Header -->
+        <header class="bg-darker p-4 border-b border-darkest sticky top-0 z-30">
+            <div class="flex items-center justify-between">
+                <h2 class="text-xl font-semibold">Tasks Management</h2>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <input 
+                            type="text" 
+                            placeholder="Search tasks, docs..."
+                            class="bg-darkest border border-darkest rounded-full py-2 px-4 pl-10 w-full md:w-64 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
+                        >
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+                    <div class="relative">
+                        <button class="rounded-full h-10 w-10 bg-darkest hover:bg-accent transition-slow flex items-center justify-center">
+                            <i class="fas fa-bell text-gray-300"></i>
+                            <span class="absolute top-0 right-0 h-3 w-3 rounded-full bg-red-500"></span>
+                        </button>
+                    </div>
+                    <div class="h-10 w-10 rounded-full bg-accent flex items-center justify-center text-white">
+                        <span>JD</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="p-6">
+            <!-- Quick Actions -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-darker p-6 rounded-lg border border-darkest">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center">
+                        <i class="fas fa-plus-circle mr-3 text-accent"></i> Create Task
+                    </h3>
+                    <form>
+                        <input 
+                            type="text" 
+                            placeholder="Task title"
+                            class="w-full bg-darkest border border-darkest rounded px-4 py-2 mb-3 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
+                        >
+                        <textarea 
+                            placeholder="Task description"
+                            class="w-full bg-darkest border border-darkest rounded px-4 py-2 mb-3 h-20 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
+                        ></textarea>
+                        <div class="flex justify-between items-center mb-3">
+                            <select class="bg-darkest border border-darkest rounded px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent">
+                                <option>Select project</option>
+                                <option>API Integration</option>
+                                <option>Frontend Redesign</option>
+                                <option>Database Migration</option>
+                            </select>
+                            <select class="bg-darkest border border-darkest rounded px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent">
+                                <option>Priority</option>
+                                <option>Low</option>
+                                <option>Medium</option>
+                                <option>High</option>
+                            </select>
+                        </div>
+                        <button class="bg-accent hover:bg-opacity-90 text-white px-4 py-2 rounded w-full transition-slow">
+                            Add Task
+                        </button>
+                    </form>
+                </div>
+
+                <div class="bg-darker p-6 rounded-lg border border-darkest">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center">
+                        <i class="fas fa-chart-line mr-3 text-accent"></i> My Progress
+                    </h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Tasks completed</span>
+                                <span>12/24</span>
+                            </div>
+                            <div class="w-full bg-darkest rounded-full h-2">
+                                <div class="bg-green-500 h-2 rounded-full" style="width: 50%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Projects</span>
+                                <span>3</span>
+                            </div>
+                            <div class="w-full bg-darkest rounded-full h-2">
+                                <div class="bg-blue-500 h-2 rounded-full" style="width: 30%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Knowledge shared</span>
+                                <span>5 articles</span>
+                            </div>
+                            <div class="w-full bg-darkest rounded-full h-2">
+                                <div class="bg-purple-500 h-2 rounded-full" style="width: 25%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-darkest">
+                        <button class="flex items-center justify-center text-accent hover:text-accent hover:underline">
+                            View detailed statistics <i class="fas fa-chevron-right ml-2 text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-darker p-6 rounded-lg border border-darkest">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center">
+                        <i class="fas fa-bolt mr-3 text-accent"></i> Quick Access
+                    </h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <a href="#" class="flex flex-col items-center justify-center bg-darkest hover:bg-accent p-4 rounded transition-slow">
+                            <i class="fas fa-file-alt text-xl mb-2"></i>
+                            <span class="text-sm">New Doc</span>
+                        </a>
+                        <a href="#" class="flex flex-col items-center justify-center bg-darkest hover:bg-accent p-4 rounded transition-slow">
+                            <i class="fas fa-link text-xl mb-2"></i>
+                            <span class="text-sm">Save Link</span>
+                        </a>
+                        <a href="#" class="flex flex-col items-center justify-center bg-darkest hover:bg-accent p-4 rounded transition-slow">
+                            <i class="fas fa-question-circle text-xl mb-2"></i>
+                            <span class="text-sm">Ask Q</span>
+                        </a>
+                        <a href="#" class="flex flex-col items-center justify-center bg-darkest hover:bg-accent p-4 rounded transition-slow">
+                            <i class="fas fa-users text-xl mb-2"></i>
+                            <span class="text-sm">Team</span>
+                        </a>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-darkest">
+                        <h4 class="text-sm font-semibold mb-2">Recent Bookmarks</h4>
+                        <ul class="text-sm space-y-1">
+                            <li><a href="#" class="hover:text-accent flex items-center"><i class="fas fa-bookmark mr-2 text-accent"></i> React Docs</a></li>
+                            <li><a href="#" class="hover:text-accent flex items-center"><i class="fas fa-bookmark mr-2 text-accent"></i> Tailwind Cheatsheet</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs Navigation -->
+            <div class="border-b border-darkest mb-6">
+                <nav class="flex space-x-8">
+                    <button class="pb-4 px-1 border-b-2 font-medium text-sm border-accent text-white">My Tasks</button>
+                    <button class="pb-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-400 hover:text-white">All Tasks</button>
+                    <button class="pb-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-400 hover:text-white">Team Tasks</button>
+                </nav>
+            </div>
+
+            <!-- Tasks List -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <div class="bg-darker p-6 rounded-lg border border-darkest">
+                    <h3 class="text-lg font-semibold mb-4">To Do <span class="text-sm text-gray-400 ml-2">(5 tasks)</span></h3>
+                    <div class="space-y-3">
+                        <div class="bg-darkest p-4 rounded border-l-4 border-yellow-500">
+                            <div class="flex justify-between">
+                                <h4 class="font-medium">Implement JWT authentication</h4>
+                                <div class="flex space-x-2">
+                                    <button class="text-gray-400 hover:text-white"><i class="fas fa-ellipsis-v"></i></button>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-400 mt-1">Add JWT support to the API backend</p>
+                            <div class="flex items-center justify-between mt-3">
+                                <span class="text-xs px-2 py-1 bg-blue-900 text-blue-300 rounded">API Integration</span>
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-xs px-2 py-1 bg-dark rounded text-gray-400">Due: Tomorrow</span>
+                                    <span class="text-xs px-2 py-1 bg-red-900 text-red-300 rounded">High</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-darkest p-4 rounded border-l-4 border-blue-500">
+                            <div class="flex justify-between">
+                                <h4 class="font-medium">Redesign dashboard UI</h4>
+                                <div class="flex space-x-2">
+                                    <button class="text-gray-400 hover:text-white"><i class="fas fa-ellipsis-v"></i></button>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-400 mt-1">Create new wireframes for the dashboard</p>
+                            <div class="flex items-center justify-between mt-3">
+                                <span class="text-xs px-2 py-1 bg-green-900 text-green-300 rounded">Frontend Redesign</span>
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-xs px-2 py-1 bg-dark rounded text-gray-400">Due: Friday</span>
+                                    <span class="text-xs px-2 py-1 bg-yellow-900 text-yellow-300 rounded">Medium</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-darkest p-4 rounded border-l-4 border-purple-500">
+                            <div class="flex justify-between">
+                                <h4 class="font-medium">Migrate user data to new schema</h4>
+                                <div class="flex space-x-2">
+                                    <button class="text-gray-400 hover:text-white"><i class="fas fa-ellipsis-v"></i></button>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-400 mt-1">Need to update all user records</p>
+                            <div class="flex items-center justify-between mt-3">
+                                <span class="text-xs px-2 py-1 bg-purple-900 text-purple-300 rounded">Database Migration</span>
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-xs px-2 py-1 bg-dark rounded text-gray-400">Due: Next Week</span>
+                                    <span class="text-xs px-2 py-1 bg-green-900 text-green-300 rounded">Low</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-darker p-6 rounded-lg border border-darkest">
+                    <h3 class="text-lg font-semibold mb-4">In Progress <span class="text-sm text-gray-400 ml-2">(3 tasks)</span></h3>
+                    <div class="space-y-3">
+                        <div class="bg-darkest p-4 rounded border-l-4 border-accent">
+                            <div class="flex justify-between">
+                                <h4 class="font-medium">API documentation</h4>
+                                <div class="flex space-x-2">
+                                    <button class="text-gray-400 hover:text-white"><i class="fas fa-ellipsis-v"></i></button>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-400 mt-1">Write OpenAPI specs for the new endpoints</p>
+                            <div class="flex items-center justify-between mt-3">
+                                <span class="text-xs px-2 py-1 bg-blue-900 text-blue-300 rounded">API Integration</span>
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-xs px-2 py-1 bg-dark rounded text-gray-400">In progress</span>
+                                    <span class="text-xs px-2 py-1 bg-red-900 text-red-300 rounded">High</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-darkest p-4 rounded border-l-4 border-accent">
+                            <div class="flex justify-between">
+                                <h4 class="font-medium">Create component library</h4>
+                                <div class="flex space-x-2">
+                                    <button class="text-gray-400 hover:text-white"><i class="fas fa-ellipsis-v"></i></button>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-400 mt-1">Storybook setup for UI components</p>
+                            <div class="flex items-center justify-between mt-3">
+                                <span class="text-xs px-2 py-1 bg-green-900 text-green-300 rounded">Frontend Redesign</span>
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-xs px-2 py-1 bg-dark rounded text-gray-400">In progress</span>
+                                    <span class="text-xs px-2 py-1 bg-yellow-900 text-yellow-300 rounded">Medium</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h3 class="text-lg font-semibold mt-6 mb-4">Done Today <span class="text-sm text-gray-400 ml-2">(2 tasks)</span></h3>
+                    <div class="space-y-3">
+                        <div class="bg-darkest p-4 rounded border-l-4 border-green-500 opacity-70">
+                            <div class="flex justify-between">
+                                <h4 class="font-medium line-through">Fix login page CSS issues</h4>
+                                <div class="flex space-x-2">
+                                    <button class="text-gray-400 hover:text-white"><i class="fas fa-check text-green-500"></i></button>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-400 mt-1 line-through">Responsive problems on mobile</p>
+                            <div class="flex items-center justify-between mt-3">
+                                <span class="text-xs px-2 py-1 bg-green-900 text-green-300 rounded line-through">Frontend Redesign</span>
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-xs px-2 py-1 bg-dark rounded text-gray-400 line-through">Completed</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Knowledge Base Section -->
+            <div class="bg-darker p-6 rounded-lg border border-darkest mb-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-lg font-semibold">Knowledge Base</h3>
+                    <button class="bg-accent hover:bg-opacity-90 text-white px-4 py-2 rounded transition-slow flex items-center">
+                        <i class="fas fa-plus mr-2"></i> Add Article
+                    </button>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-darkest p-4 rounded-lg border border-darker hover:border-accent transition-slow">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <span class="text-xs px-2 py-1 bg-blue-900 text-blue-300 rounded mb-2 inline-block">API</span>
+                                <h4 class="font-medium">JWT Authentication Guide</h4>
+                            </div>
+                            <button class="text-gray-400 hover:text-white"><i class="far fa-bookmark"></i></button>
+                        </div>
+                        <p class="text-sm text-gray-400 mb-4">Step-by-step guide to implement JWT in our backend services</p>
+                        <div class="flex justify-between items-center text-xs text-gray-500">
+                            <span>Created: 2 days ago</span>
+                            <span class="flex items-center"><i class="fas fa-eye mr-1"></i> 24</span>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-darkest p-4 rounded-lg border border-darker hover:border-accent transition-slow">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <span class="text-xs px-2 py-1 bg-green-900 text-green-300 rounded mb-2 inline-block">Frontend</span>
+                                <h4 class="font-medium">React Performance Tips</h4>
+                            </div>
+                            <button class="text-gray-400 hover:text-white"><i class="far fa-bookmark"></i></button>
+                        </div>
+                        <p class="text-sm text-gray-400 mb-4">Best practices for optimizing React components in our app</p>
+                        <div class="flex justify-between items-center text-xs text-gray-500">
+                            <span>Created: 1 week ago</span>
+                            <span class="flex items-center"><i class="fas fa-eye mr-1"></i> 56</span>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-darkest p-4 rounded-lg border border-darker hover:border-accent transition-slow">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <span class="text-xs px-2 py-1 bg-purple-900 text-purple-300 rounded mb-2 inline-block">Database</span>
+                                <h4 class="font-medium">MongoDB Migration Script</h4>
+                            </div>
+                            <button class="text-gray-400 hover:text-white"><i class="far fa-bookmark"></i></button>
+                        </div>
+                        <p class="text-sm text-gray-400 mb-4">Script template for safely migrating data between collections</p>
+                        <div class="flex justify-between items-center text-xs text-gray-500">
+                            <span>Created: 3 days ago</span>
+                            <span class="flex items-center"><i class="fas fa-eye mr-1"></i> 18</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-6 text-center">
+                    <button class="text-accent hover:underline flex items-center justify-center mx-auto">
+                        View all knowledge base articles <i class="fas fa-chevron-right ml-2 text-xs"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Forum Section -->
+            <div class="bg-darker p-6 rounded-lg border border-darkest">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-lg font-semibold">Recent Forum Discussions</h3>
+                    <button class="bg-accent hover:bg-opacity-90 text-white px-4 py-2 rounded transition-slow flex items-center">
+                        <i class="fas fa-plus mr-2"></i> New Discussion
+                    </button>
+                </div>
+                
+                <div class="space-y-4">
+                    <div class="bg-darkest p-4 rounded-lg border border-darker hover:border-accent transition-slow">
+                        <div class="flex items-start">
+                            <div class="h-10 w-10 rounded-full bg-green-500 flex items-center justify-center text-white mr-4 flex-shrink-0">
+                                <span>AM</span>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start mb-1">
+                                    <h4 class="font-medium">State management in large React apps</h4>
+                                    <span class="text-xs bg-accent text-white px-2 py-1 rounded flex items-center">
+                                        <i class="fas fa-comment-alt mr-1"></i> 12
+                                    </span>
+                                </div>
+                                <p class="text-sm text-gray-400 mb-2">What's the best approach for state management in our growing React application? We're currently using Context API but it's getting messy.</p>
+                                <div class="flex justify-between items-center text-xs text-gray-500">
+                                    <span>Posted by Alex M. in Frontend <span class="text-gray-400">•</span> 3 hours ago</span>
+                                    <div class="flex space-x-2">
+                                        <button class="hover:text-accent"><i class="far fa-thumbs-up"></i> 5</button>
+                                        <button class="hover:text-accent"><i class="far fa-comment"></i> Reply</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-darkest p-4 rounded-lg border border-darker hover:border-accent transition-slow">
+                        <div class="flex items-start">
+                            <div class="h-10 w-10 rounded-full bg-blue-500 flex items-center justify-center text-white mr-4 flex-shrink-0">
+                                <span>JR</span>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start mb-1">
+                                    <h4 class="font-medium">API Versioning Strategy</h4>
+                                    <span class="text-xs bg-accent text-white px-2 py-1 rounded flex items-center">
+                                        <i class="fas fa-comment-alt mr-1"></i> 8
+                                    </span>
+                                </div>
+                                <p class="text-sm text-gray-400 mb-2">We need to decide on a versioning strategy for our public API before release. Should we go with URL versioning or headers?</p>
+                                <div class="flex justify-between items-center text-xs text-gray-500">
+                                    <span>Posted by Jamie R. in API <span class="text-gray-400">•</span> 1 day ago</span>
+                                    <div class="flex space-x-2">
+                                        <button class="hover:text-accent"><i class="far fa-thumbs-up"></i> 7</button>
+                                        <button class="hover:text-accent"><i class="far fa-comment"></i> Reply</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-darkest p-4 rounded-lg border border-darker hover:border-accent transition-slow">
+                        <div class="flex items-start">
+                            <div class="h-10 w-10 rounded-full bg-purple-500 flex items-center justify-center text-white mr-4 flex-shrink-0">
+                                <span>SK</span>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start mb-1">
+                                    <h4 class="font-medium">Database backup solutions</h4>
+                                    <span class="text-xs bg-accent text-white px-2 py-1 rounded flex items-center">
+                                        <i class="fas fa-comment-alt mr-1"></i> 5
+                                    </span>
+                                </div>
+                                <p class="text-sm text-gray-400 mb-2">Looking for recommendations on automated backup solutions for our MongoDB clusters. What's everyone using?</p>
+                                <div class="flex justify-between items-center text-xs text-gray-500">
+                                    <span>Posted by Sam K. in Database <span class="text-gray-400">•</span> 2 days ago</span>
+                                    <div class="flex space-x-2">
+                                        <button class="hover:text-accent"><i class="far fa-thumbs-up"></i> 4</button>
+                                        <button class="hover:text-accent"><i class="far fa-comment"></i> Reply</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-6 text-center">
+                    <button class="text-accent hover:underline flex items-center justify-center mx-auto">
+                        View all forum discussions <i class="fas fa-chevron-right ml-2 text-xs"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const sidebar = document.getElementById('sidebar');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+        });
+        
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!sidebar.contains(e.target) && e.target !== mobileMenuBtn && !mobileMenuBtn.contains(e.target)) {
+                sidebar.classList.add('-translate-x-full');
+            }
+        });
+        
+        // Simulate loading
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                document.body.classList.remove('opacity-0');
+            }, 100);
+        });
+    </script>
+</body>
+</html>

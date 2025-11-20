@@ -1,0 +1,338 @@
+[
+  {
+    "name": "50 Push-ups",
+    "description": "Complete 50 push-ups as fast as possible.",
+    "type": "strength",
+    "difficulty": "medium",
+    "challenge": "time"
+  },
+  {
+    "name": "1 Mile Run",
+    "description": "Run 1 mile without stopping.",
+    "type": "cardio",
+    "difficulty": "medium",
+    "challenge": "time"
+  },
+  {
+    "name": "Plank Hold",
+    "description": "Hold a plank for 2 minutes.",
+    "type": "core",
+    "difficulty": "hard",
+    "challenge": "strength"
+  },
+  {
+    "name": "100 Jumping Jacks",
+    "description": "Do 100 jumping jacks in a single set.",
+    "type": "cardio",
+    "difficulty": "easy",
+    "challenge": "time"
+  },
+  {
+    "name": "Wall Sit Challenge",
+    "description": "Hold a wall sit for 2 minutes.",
+    "type": "strength",
+    "difficulty": "medium",
+    "challenge": "strength"
+  },
+  {
+    "name": "Burpee Blast",
+    "description": "Do 30 burpees as fast as you can.",
+    "type": "cardio",
+    "difficulty": "hard",
+    "challenge": "time"
+  },
+  {
+    "name": "Yoga Flow",
+    "description": "Complete a 10-minute yoga flow.",
+    "type": "flexibility",
+    "difficulty": "easy",
+    "challenge": "strength"
+  },
+  {
+    "name": "Squat Burner",
+    "description": "Do 100 bodyweight squats as fast as you can.",
+    "type": "strength",
+    "difficulty": "medium",
+    "challenge": "time"
+  },
+  {
+    "name": "5 Min Jump Rope",
+    "description": "Jump rope continuously for 5 minutes.",
+    "type": "cardio",
+    "difficulty": "medium",
+    "challenge": "time"
+  },
+  {
+    "name": "Mountain Climbers",
+    "description": "Do 100 mountain climbers as fast as you can.",
+    "type": "core",
+    "difficulty": "medium",
+    "challenge": "time"
+  },
+  {
+    "name": "Pull-up Max",
+    "description": "Do as many pull-ups as possible.",
+    "type": "strength",
+    "difficulty": "hard",
+    "challenge": "strength"
+  },
+  {
+    "name": "Lunges Galore",
+    "description": "Do 50 walking lunges per leg.",
+    "type": "strength",
+    "difficulty": "medium",
+    "challenge": "time"
+  },
+  {
+    "name": "Bear Crawl",
+    "description": "Crawl in a bear position for 1 minute.",
+    "type": "core",
+    "difficulty": "medium",
+    "challenge": "time"
+  },
+  {
+    "name": "1 Min Handstand Hold",
+    "description": "Hold a handstand for 1 minute.",
+    "type": "balance",
+    "difficulty": "hard",
+    "challenge": "strength"
+  },
+  {
+    "name": "High Knees",
+    "description": "Do high knees for 2 minutes.",
+    "type": "cardio",
+    "difficulty": "medium",
+    "challenge": "strength"
+  },
+  {
+    "name": "30 Min Walk",
+    "description": "Take a brisk 30-minute walk.",
+    "type": "cardio",
+    "difficulty": "easy",
+    "challenge": "strength"
+  },
+  {
+    "name": "Side Plank",
+    "description": "Hold a side plank for 1 minute each side.",
+    "type": "core",
+    "difficulty": "medium",
+    "challenge": "strength"
+  },
+  {
+    "name": "Step-Up Challenge",
+    "description": "Do 50 step-ups on a bench or box.",
+    "type": "strength",
+    "difficulty": "medium",
+    "challenge": "time"
+  },
+  {
+    "name": "Crab Walk",
+    "description": "Do a crab walk for 2 minutes.",
+    "type": "core",
+    "difficulty": "easy",
+    "challenge": "strength"
+  },
+  {
+    "name": "Tuck Jumps",
+    "description": "Do 20 tuck jumps as fast as you can.",
+    "type": "cardio",
+    "difficulty": "hard",
+    "challenge": "time"
+  },
+  {
+    "name": "Stretch Series",
+    "description": "Complete a full body stretch for 10 minutes.",
+    "type": "flexibility",
+    "difficulty": "easy",
+    "challenge": "strength"
+  },
+  {
+    "name": "Jump Squats",
+    "description": "Perform 40 jump squats as fast as you can.",
+    "type": "strength",
+    "difficulty": "medium",
+    "challenge": "time"
+  },
+  {
+    "name": "Bicycle Crunches",
+    "description": "Do 100 bicycle crunches.",
+    "type": "core",
+    "difficulty": "medium",
+    "challenge": "time"
+  },
+  {
+    "name": "Tricep Dips",
+    "description": "Do 50 tricep dips on a bench.",
+    "type": "strength",
+    "difficulty": "medium",
+    "challenge": "time"
+  },
+  {
+    "name": "1 Mile Walk",
+    "description": "Walk 1 mile outdoors or on a treadmill.",
+    "type": "cardio",
+    "difficulty": "easy",
+    "challenge": "strength"
+  },
+  {
+    "name": "Shadow Boxing",
+    "description": "Box the air with intensity for 3 minutes.",
+    "type": "cardio",
+    "difficulty": "medium",
+    "challenge": "strength"
+  },
+  {
+    "name": "Box Jumps",
+    "description": "Do 30 box jumps.",
+    "type": "strength",
+    "difficulty": "hard",
+    "challenge": "time"
+  },
+  {
+    "name": "Skipping Ladder",
+    "description": "Do 5, 10, 15, 20, 25 jumps with rest between.",
+    "type": "cardio",
+    "difficulty": "easy",
+    "challenge": "time"
+  },
+  {
+    "name": "Wall Push-ups",
+    "description": "Do 30 wall push-ups for beginners.",
+    "type": "strength",
+    "difficulty": "easy",
+    "challenge": "time"
+  },
+  {
+    "name": "Bird Dog",
+    "description": "Do 20 reps per side of bird dog.",
+    "type": "balance",
+    "difficulty": "easy",
+    "challenge": "time"
+  },
+  {
+    "name": "Glute Bridges",
+    "description": "Do 50 glute bridges.",
+    "type": "strength",
+    "difficulty": "easy",
+    "challenge": "time"
+  },
+  {
+    "name": "Sit-up Challenge",
+    "description": "Do 100 sit-ups.",
+    "type": "core",
+    "difficulty": "medium",
+    "challenge": "time"
+  },
+  {
+    "name": "Diamon Push-ups",
+    "description": "Do 50 diamond push-ups.",
+    "type": "strength",
+    "difficulty": "easy",
+    "challenge": "time"
+  },
+  {
+    "name": "Punch Intervals",
+    "description": "Do 30 seconds of punches, rest 10s, repeat 5x.",
+    "type": "cardio",
+    "difficulty": "medium",
+    "challenge": "strength"
+  },
+  {
+    "name": "Heel Touches",
+    "description": "Do 50 heel touches (obliques).",
+    "type": "core",
+    "difficulty": "easy",
+    "challenge": "time"
+  },
+  {
+    "name": "Duck Walk",
+    "description": "Walk 10m in duck walk position.",
+    "type": "strength",
+    "difficulty": "medium",
+    "challenge": "time"
+  },
+  {
+    "name": "Run Sprints",
+    "description": "Sprint 100m x 5 rounds.",
+    "type": "cardio",
+    "difficulty": "hard",
+    "challenge": "strength"
+  },
+  {
+    "name": "Stair Climb",
+    "description": "Climb 10 flights of stairs.",
+    "type": "cardio",
+    "difficulty": "hard",
+    "challenge": "time"
+  },
+  {
+    "name": "Resistance Band Rows",
+    "description": "Do 3 sets of 15 band rows.",
+    "type": "strength",
+    "difficulty": "easy",
+    "challenge": "time"
+  },
+  {
+    "name": "Single-leg Balance",
+    "description": "Balance on one leg for 1 min per side.",
+    "type": "balance",
+    "difficulty": "easy",
+    "challenge": "strength"
+  },
+  {
+    "name": "Dead Bug",
+    "description": "Perform 3 sets of 10 dead bug reps.",
+    "type": "core",
+    "difficulty": "medium",
+    "challenge": "strength"
+  },
+  {
+    "name": "Skater Jumps",
+    "description": "Do 40 skater jumps.",
+    "type": "cardio",
+    "difficulty": "medium",
+    "challenge": "time"
+  },
+  {
+    "name": "Toe Touch Stretch",
+    "description": "Hold a toe touch stretch for 2 minutes.",
+    "type": "flexibility",
+    "difficulty": "easy",
+    "challenge": "strength"
+  },
+  {
+    "name": "Russian Twists",
+    "description": "Do 50 Russian twists (25 per side).",
+    "type": "core",
+    "difficulty": "medium",
+    "challenge": "time"
+  },
+  {
+    "name": "Side Lunges",
+    "description": "Do 20 side lunges per leg.",
+    "type": "strength",
+    "difficulty": "medium",
+    "challenge": "time"
+  },
+  {
+    "name": "Superman Hold",
+    "description": "Hold superman position for 1 min.",
+    "type": "core",
+    "difficulty": "medium",
+    "challenge": "strength"
+  },
+  {
+    "name": "Hip Openers",
+    "description": "Do 10 reps per side of standing hip circles.",
+    "type": "flexibility",
+    "difficulty": "easy",
+    "challenge": "strength"
+  },
+  {
+    "name": "Dynamic Warm-up",
+    "description": "Perform a full dynamic warm-up routine.",
+    "type": "flexibility",
+    "difficulty": "easy",
+    "challenge": "strength"
+  }
+]

@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
+const xapikey = import.meta.env.VITE_XAPIKEY
+
 type UploadMode = "batch" | "sequential";
 
 type FileRow = {
@@ -9,7 +11,6 @@ type FileRow = {
   status: "Queued" | "Uploading…" | "Uploaded" | "Error";
 };
 
-// ---- Helpers ----
 
 function formatBytes(bytes: number) {
   const units = ["B", "KB", "MB", "GB", "TB"] as const;
@@ -22,17 +23,15 @@ function uid() {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
-// Minimal, resilient JSON parse for metadata input
 function safeJsonParse(s: string): unknown | undefined {
   if (!s.trim()) return undefined;
   try {
     return JSON.parse(s);
   } catch {
-    return s; // as plain string fallback
+    return s; 
   }
 }
 
-// Perform an XHR POST with progress support
 async function postFormData({
   url,
   formData,
@@ -49,8 +48,7 @@ async function postFormData({
     const xhr = new XMLHttpRequest();
     xhr.open("POST", url);
 
-    // Example of fixed header you can customize:
-    xhr.setRequestHeader("x-api-key", "3F9A7C12B4E0D6A8");
+    xhr.setRequestHeader("x-api-key", xapikey);
 
     if (headers) {
       for (const [k, v] of Object.entries(headers)) {
@@ -80,7 +78,7 @@ async function postFormData({
 }
 
 export default function MultiFileUploader() {
-  // ---- Form state ----
+ 
   const [endpoint, setEndpoint] = useState<string>(() => localStorage.getItem("mf_endpoint") || "/api/upload");
   const [fieldName, setFieldName] = useState("files[]");
   const [token, setToken] = useState("");
@@ -89,7 +87,7 @@ export default function MultiFileUploader() {
   const [clearOnSuccess, setClearOnSuccess] = useState(true);
   const [allowDuplicates, setAllowDuplicates] = useState(false);
 
-  // ---- Files ----
+
   const [rows, setRows] = useState<FileRow[]>([]);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [response, setResponse] = useState<unknown | string | null>(null);
@@ -200,7 +198,7 @@ export default function MultiFileUploader() {
 
   const dropzoneRef = useRef<HTMLDivElement | null>(null);
 
-  // ---- Render ----
+  
   return (
     <div className="min-h-screen bg-slate-950 text-slate-200 p-6">
       <div className="mx-auto max-w-5xl rounded-2xl border border-slate-700/40 bg-slate-900/70 backdrop-blur-md shadow-2xl p-6">

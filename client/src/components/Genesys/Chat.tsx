@@ -28,7 +28,7 @@ const Chat: React.FC<FloatingMessengerProps> = ({
         </div>
       )}
 
-      {/* Floating round launcher button */}
+
       {!open ? (
         <button
           type="button"

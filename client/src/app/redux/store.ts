@@ -1,12 +1,13 @@
 import {configureStore} from "@reduxjs/toolkit";
-import {zoeSlice} from "./zoeSlice"
+//import {zoeSlice} from "./zoeSlice";
+import { apiSlice } from "./apiSlice";
 
 export const store = configureStore({
     reducer:{
-        [zoeSlice.reducerPath]:zoeSlice.reducer,
+        [apiSlice.reducerPath]: apiSlice.reducer,
     },
     middleware:(getDefaultMiddleware)=>
-        getDefaultMiddleware().concat(zoeSlice.middleware),
+        getDefaultMiddleware().concat(apiSlice.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

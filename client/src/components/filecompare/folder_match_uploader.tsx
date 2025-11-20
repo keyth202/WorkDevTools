@@ -1,20 +1,12 @@
 import React, { useMemo, useRef, useState } from "react";
 
-// FolderMatchUploader
-// Compare file names in Folder A vs Folder B (ignoring extension),
-// then upload ONLY the matching files from Folder A to a backend endpoint
-// in a single batch request (like the earlier batch uploader).
-//
-// Tailwind + TypeScript, no external deps.
 
-// ---- Types ----
 type FileRow = {
   id: string;
   file: File;
-  base: string; // base name without extension, lowercased
+  base: string; 
 };
 
-// ---- Helpers ----
 function uid() {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
@@ -29,7 +21,7 @@ function safeJsonParse(s: string): unknown | undefined {
   try {
     return JSON.parse(s);
   } catch {
-    return s; // as plain string fallback
+    return s;
   }
 }
 
@@ -55,8 +47,7 @@ async function postFormData({
     const xhr = new XMLHttpRequest();
     xhr.open("POST", url);
 
-    // Example of fixed header you can customize
-    // 
+
     xhr.setRequestHeader("x-api-key", import.meta.env.VITE_LOCAL_KEY);
 
     if (headers) {
@@ -87,16 +78,16 @@ async function postFormData({
 }
 
 export default function FolderMatchUploader() {
-  // ---- Config state ----
+
   const [endpoint, setEndpoint] = useState("/api/upload");
   const [fieldName, setFieldName] = useState("files[]");
   const [token, setToken] = useState("");
 
-  // ---- Files in each folder ----
+
   const [aRows, setARows] = useState<FileRow[]>([]);
   const [bRows, setBRows] = useState<FileRow[]>([]);
 
-  // ---- Upload progress/response ----
+
   const [progress, setProgress] = useState<number>(0);
   const [status, setStatus] = useState<"idle" | "uploading" | "done" | "error">("idle");
   const [response, setResponse] = useState<unknown | string | null>(null);
@@ -104,10 +95,9 @@ export default function FolderMatchUploader() {
   const aPickerRef = useRef<HTMLInputElement | null>(null);
   const bPickerRef = useRef<HTMLInputElement | null>(null);
 
-  // Build Set of Folder B base names for quick lookup
+
   const bBaseSet = useMemo(() => new Set(bRows.map(r => r.base)), [bRows]);
 
-  // Compute matches: files in A whose base also exists in B (ignoring extension)
   const matchedA = useMemo(() => aRows.filter(r => !bBaseSet.has(r.base)), [aRows, bBaseSet]);
 
   const counts = useMemo(() => ({
@@ -150,14 +140,6 @@ export default function FolderMatchUploader() {
 
     matchedA.forEach(r => fd.append(field, r.file, r.file.name));
 
-    /* include some helpful metadata if you want
-    fd.append("meta", JSON.stringify({
-      strategy: "intersection_by_basename",
-      totalFiles: matchedA.length,
-      totalBytes: counts.size,
-      matchedBaseNames: matchedA.map(r => r.base),
-    }));
-    */
     return fd;
   }
  function makeFormData(chunk: FileRow[] | FileRow): FormData {

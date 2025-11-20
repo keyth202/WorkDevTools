@@ -45,7 +45,6 @@ export default function AgentLaunch(): JSX.Element {
   const [transcript, setTranscript] = useRecoilState(transcriptState);
   const [launch, setLaunch] = useState<boolean>(false);
 
-  // Sync local form to global recoil state
   useEffect(() => {
     setGlobalForm((prev) => ({ ...prev, 
       agentId: form.agentId,

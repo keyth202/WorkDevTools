@@ -9,6 +9,7 @@ import MultiFileUploader from "@/pages/MultiFileUploader";
 import FolderMatchUploader from "@/components/filecompare/folder_match_uploader";
 import TTSPage from "@/pages/TTSPage";
 import FakeBank from "@/pages/FakeBank";
+import DataProcessor from "@/pages/DataProcessor";
 
 
 const router = createBrowserRouter(
@@ -25,6 +26,7 @@ const router = createBrowserRouter(
         <Route path="folder-compare" element={<FolderMatchUploader />} />
         <Route path="tts" element={<TTSPage />} />
         <Route path="bank" element={<FakeBank />} />
+        <Route path="data" element={<DataProcessor />} />
       </Route>
     </Route>
   )

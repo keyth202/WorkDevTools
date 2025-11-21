@@ -7,7 +7,7 @@ import {
  startDateState,
   endDateState,
 } from '@/app/recoil/recoilState';
-import { searchConversationsByKeyword } from '@/app/services/genesysRecServices';
+import { searchConversationsByKeyword } from '@/app/scripts/Genesys/genesysRecServices';
 import KeywordResults from './KeywordResults';
 
 

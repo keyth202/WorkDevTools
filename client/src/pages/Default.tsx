@@ -6,9 +6,6 @@ import ResponsiveSidebarLayout, {NavItem} from '@/components/Nav/ResonsiveSideba
 import { Menu, X, Home, Folder, Settings, HelpCircle, PiggyBank,FileText } from "lucide-react";
 
 
-
-
-//import { Toaster } from '@/components/ui/toaster';
 const nav: NavItem[] = [
  { label: "Home", href: "/", icon: <Home className="h-4 w-4" /> },
 { label: "MultiFileUploader", href: "/upload", icon: <Folder className="h-4 w-4" /> },

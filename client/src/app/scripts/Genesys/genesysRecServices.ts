@@ -1,4 +1,4 @@
-import { conversationsApi, routingApi, speechTextApi } from "../scripts/Genesys/genesysCloudUtils";
+import { conversationsApi, routingApi, speechTextApi } from "./genesysCloudUtils";
 
 
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { generateTextWHxIns} from "@/scripts/Google/gscript";
+import { generateTextWHxIns} from "@/app/scripts/Google/gscript";
 import { useRecoilState } from "recoil";
 import { transcriptState, formState } from "@/app/recoil/atoms";
 

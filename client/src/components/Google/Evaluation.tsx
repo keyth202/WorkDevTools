@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useRecoilState } from 'recoil'
 import { transcriptState, formState } from '@/app/recoil/atoms'
-import { generateTextWPnS } from '@/scripts/Google/gscript'
+import { generateTextWPnS } from '@/app/scripts/Google/gscript'
 import ReactMarkdown from 'react-markdown';
 import { addDocument } from '@/scripts/Google/firebase';
 import ReadEvals from './ReadEvals';

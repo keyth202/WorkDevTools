@@ -6,7 +6,7 @@ import {
     authenticate,
     getMyUser,
     genesysInit,
-  } from "../app/services/genesysCloudUtils";
+  } from "../app/scripts/Genesys/genesysCloudUtils";
 import {  useLazyGetOrgsQuery } from '@/app/redux/apiSlice';
 import OrgSelector2 from '@/components/orgselector/OrgSelector2';
 import { loadFromLocalStorageWithExpiry } from '@/helpers/helper';

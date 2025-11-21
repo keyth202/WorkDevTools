@@ -3,7 +3,7 @@ import PrettyProcessor from '@/components/processor/PrettyProcessor'
 import KeywordProcessor from '@/components/processor/KeywordProcessor';
 import { useRecoilState } from 'recoil';
 import { queueState } from '@/app/recoil/recoilState';
-import {getQueues} from '@/app/services/genesysRecServices';
+import {getQueues} from '@/app/scripts/Genesys/genesysRecServices';
 
 const DataProcessor = () => {
   const [queueData, setQueueData] = useRecoilState(queueState);

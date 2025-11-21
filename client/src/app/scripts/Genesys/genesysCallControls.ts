@@ -1,4 +1,4 @@
-import { conversationsApi } from "./genesysCloudUtils";
+import { conversationsApi } from "../../services/genesysCloudUtils";
 
 
 

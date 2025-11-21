@@ -1,6 +1,6 @@
 import React, { useEffect,useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { generateTextWHxMood, generateTextWOhx } from '@/scripts/Google/gscript';
+import { generateTextWHxMood, generateTextWOhx } from '@/app/scripts/Google/gscript';
 const randomNum = Math.floor(Math.random() * 4) + 1;
 const DialogflowMessengerConvTest = () => {
   const navigate = useNavigate();

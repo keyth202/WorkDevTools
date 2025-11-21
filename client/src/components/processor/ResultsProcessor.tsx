@@ -8,7 +8,7 @@ import {
   isProcessingState,
   queueState,
 } from '@/app/recoil/recoilState';
-import { searchConversations, getConvJobStatus, getJobResults, parseConversations,getTranscriptsURL, getNumberConversations } from '@/app/services/genesysRecServices'; 
+import { searchConversations, getConvJobStatus, getJobResults, parseConversations,getTranscriptsURL, getNumberConversations } from '@/app/scripts/Genesys/genesysRecServices'; 
 import { usePostTranscriptsMutation } from '@/app/redux/apiSlice';
 
 

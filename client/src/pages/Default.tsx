@@ -1,6 +1,6 @@
-import React from 'react'
-import { Outlet } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
+import React, {useEffect, useState} from 'react'
+import { Outlet, useNavigate } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
 import { authState } from '@/app/recoil/authState';
 import ResponsiveSidebarLayout, {NavItem} from '@/components/Nav/ResonsiveSidebarLayout';
 import { Menu, X, Home, Folder, Settings, HelpCircle, PiggyBank,FileText } from "lucide-react";
@@ -18,8 +18,26 @@ const nav: NavItem[] = [
 
 
 const Default = () => {
-  //const auth = useRecoilValue(authState)
-  //Insert routing to login and logic 
+  const [token, setToken] = useState<string | null>(null);
+  const [auth,setAuth] = useRecoilState(authState)
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const hash = window.location.hash.substring(1);
+    const params = new URLSearchParams(hash);
+    const accessToken = params.get("access_token");
+
+    if (accessToken) {
+      setToken(accessToken);
+      setAuth((auth)=>({
+        ...auth,
+        isAuthenticated:true,
+        token:accessToken
+      }))
+      navigate("/data");
+
+    }
+  }, []);
   return (<div className='bg-secondary text-primary font-sans'>
       <ResponsiveSidebarLayout title="Dashboard" nav={nav} />
         <Outlet />

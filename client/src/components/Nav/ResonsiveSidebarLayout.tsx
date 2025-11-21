@@ -13,7 +13,7 @@ export type ResponsiveSidebarProps = {
   title?: string;
   nav: NavItem[];
   initialOpen?: boolean;
-  /** Optionally pass the current path to highlight an item. Defaults to location.pathname (when available). */
+ 
   currentPath?: string;
   children?: React.ReactNode;
 };

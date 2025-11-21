@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import { Navigate, Outlet } from 'react-router-dom';
 import { genesysState,orgState } from '@/app/recoil/recoilState';
+import { authState } from '@/app/recoil/authState';
 import { useRecoilState } from 'recoil';
 import {
     authenticate,
@@ -10,16 +11,15 @@ import {
 import {  useLazyGetOrgsQuery } from '@/app/redux/apiSlice';
 import OrgSelector2 from '@/components/orgselector/OrgSelector2';
 import { loadFromLocalStorageWithExpiry } from '@/helpers/helper';
-import Faceplate from '@/components/faceplate/Faceplate';
-import LoadingOverlay from '@/components/LoadingOverlay/LoadingOverlay';
 import logo from '@/assets/gryyndlogo2.png';
-import emergency from '@/assets/EmergencyCallNotification.png';
+import DataProcessor from './DataProcessor';
 
 
 const BaseLogin = () => {
     const [genesys, setGenesys] = useRecoilState(genesysState);
         const [orgs, setOrgs] = useRecoilState(orgState);
         const [initialized, setInitialized] = useState<boolean>(false);
+        const [auth, setAuth] = useRecoilState(authState)
         const [orgNames,setOrgNames] = useState<string[]>([]);
         const [orglistFound, setOrgListFound] = useState<boolean>(false);
         const [orgFound, setOrgFound] = useState<boolean>(false);
@@ -34,12 +34,15 @@ const BaseLogin = () => {
     
         useEffect(() => {
             //getPlatformClientData();
-            if(!orgFound && orgNames.length === 0 &&!initialized){
+            if(!orgFound && orgNames.length === 0 &&!initialized && !auth.isAuthenticated){
               console.log("Running Get Orgs");
                getOrgsTrigger(true);
             }
-            
-        }, []);
+            if(auth.isAuthenticated){
+              setInitialized(true)
+            }
+            console.log(auth)
+        }, [auth.isAuthenticated]);
         
     
         useEffect(() => {
@@ -111,7 +114,7 @@ const BaseLogin = () => {
         <div className={`${!initialized ? "bg-slate-800" : "bg-slate-300"} flex items-center justify-center h-screen `} >
             {/*<img src={emergency} alt="logo" className="fixed top-0 left-0 z-0 w-54" /> */}
             <div className={`${!initialized ? "bg-slate-800" : "bg-slate-100"} flex items-center justify-center h-screen `} ></div>
-            {!initialized ? (<div className="h-screen flex items-center justify-center">
+            {!initialized || !auth.isAuthenticated ? (<div className="h-screen flex items-center justify-center">
               <div className={`mx-auto my-auto container shadow-lg rounded-lg h-[500px] w-[500px] z-20`}>
                 <OrgSelector2 />
               </div>
